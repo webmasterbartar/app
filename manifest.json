@@ -1,0 +1,24 @@
+
+{
+  "name": "DigiGram Store",
+  "short_name": "DigiGram",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/3059/3059463.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/3059/3059463.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "scope": "/",
+  "description": "A hybrid E-commerce platform merging Instagram-style social feed with robust shopping features."
+}
