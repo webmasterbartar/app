@@ -1,182 +1,118 @@
+/* DigiGram Store - Service Worker | PWA Offline Support */
+const APP_CACHE = 'digigram-app-v3';
+const IMAGE_CACHE = 'digigram-images-v6';
+const EXTERNAL_CACHE = 'digigram-external-v1';
 
-const CACHE_NAME = 'digigram-core-v10';
-const IMAGE_CACHE_NAME = 'digigram-images-v6';
+const OFFLINE_IMG = `<svg width="400" height="400" xmlns="http://www.w3.org/2000/svg" style="background:#f3f4f6"><text x="50%" y="50%" font-family="sans-serif" font-size="20" fill="#9ca3af" text-anchor="middle" dy=".3em">Offline</text></svg>`;
 
-// 1. ASSET PRE-CACHING (Cache First Strategy)
-// These files are critical for the "App Shell" and should be loaded from cache immediately.
-const STATIC_ASSETS = [
-  '/',
-  '/index.html',
-  '/manifest.json',
-  'https://cdn.tailwindcss.com',
-  'https://fonts.googleapis.com/css2?family=Vazirmatn:wght@100..900&display=swap',
-  'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap',
-  // Critical Dependencies
-  'https://esm.sh/react@^19.2.3',
-  'https://esm.sh/react-dom@^19.2.3',
-  'https://esm.sh/react-router-dom@^7.13.0',
-  'https://esm.sh/dexie@^4.2.1',
-  'https://esm.sh/dexie-react-hooks@^4.2.0',
-  'https://esm.sh/framer-motion@^12.29.2',
-  'https://esm.sh/@vitejs/plugin-react@^5.1.2',
-  'https://esm.sh/lucide-react@^0.563.0',
-  'https://esm.sh/@supabase/supabase-js@^2.93.1'
-];
-
-// Offline Placeholder SVG
-const OFFLINE_IMAGE = `
-<svg width="400" height="400" xmlns="http://www.w3.org/2000/svg" style="background:#f3f4f6">
-  <text x="50%" y="50%" font-family="sans-serif" font-size="20" fill="#9ca3af" text-anchor="middle" dy=".3em">Offline Mode</text>
-</svg>
-`;
-
-// Helper for consistent hashing
-const getHashIndex = (str, max) => {
-  let hash = 0;
-  for (let i = 0; i < str.length; i++) {
-    hash = ((hash << 5) - hash) + str.charCodeAt(i);
-    hash |= 0;
-  }
-  return Math.abs(hash) % max;
-};
-
-// --- INSTALL EVENT ---
-self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      console.log('[SW] Pre-caching static assets');
-      return cache.addAll(STATIC_ASSETS);
-    })
+self.addEventListener('install', function (e) {
+  e.waitUntil(
+    caches.open(APP_CACHE).then(function (c) {
+      return c.addAll(['/', '/index.html', '/manifest.json', '/sw.js']).catch(function () {});
+    }).then(function () { return self.skipWaiting(); })
   );
-  self.skipWaiting();
 });
 
-// --- ACTIVATE EVENT ---
-self.addEventListener('activate', (event) => {
-  event.waitUntil(
-    caches.keys().then((cacheNames) => {
+self.addEventListener('activate', function (e) {
+  e.waitUntil(
+    caches.keys().then(function (names) {
       return Promise.all(
-        cacheNames.map((cacheName) => {
-          if (cacheName !== CACHE_NAME && cacheName !== IMAGE_CACHE_NAME) {
-            console.log('[SW] Deleting old cache:', cacheName);
-            return caches.delete(cacheName);
-          }
+        names.map(function (n) {
+          if (n !== APP_CACHE && n !== IMAGE_CACHE && n !== EXTERNAL_CACHE) return caches.delete(n);
         })
       );
-    })
+    }).then(function () { return self.clients.claim(); })
   );
-  self.clients.claim();
 });
 
-// --- FETCH EVENT ---
-self.addEventListener('fetch', (event) => {
-  const url = new URL(event.request.url);
+self.addEventListener('fetch', function (e) {
+  var req = e.request;
+  var url = new URL(req.url);
+  var origin = self.location.origin;
+  var sameOrigin = url.origin === origin;
 
-  // 1. NAVIGATION REQUESTS (SPA Handler)
-  // If the user refreshes '/shop', '/product/1', etc. while offline, serve index.html
-  if (event.request.mode === 'navigate') {
-    event.respondWith(
-      fetch(event.request).catch(() => {
-        return caches.match('/index.html');
+  /* 1. Navigation: SPA → always serve index.html when offline */
+  if (req.mode === 'navigate') {
+    e.respondWith(
+      fetch(req).then(function (res) {
+        var clone = res.clone();
+        return caches.open(APP_CACHE).then(function (c) { return c.put('/index.html', clone); }).then(function () { return res; });
+      }).catch(function () {
+        return caches.match('/index.html').then(function (c) { return c || caches.match('/'); });
       })
     );
     return;
   }
 
-  // 2. IMAGES (Cache First - aggressive offline support)
-  // Cache ALL image requests: profile, products, covers, highlights, avatars, etc.
-  const isImageRequest = event.request.destination === 'image' ||
-    url.hostname.includes('picsum.photos') ||
-    url.hostname.includes('images.pexels.com') ||
-    url.hostname.includes('pexels.com') ||
-    url.hostname.includes('ui-avatars.com') ||
-    url.hostname.includes('storage.googleapis.com') ||
-    url.hostname.includes('supabase') ||
-    url.hostname.includes('cdn-icons-png.flaticon.com') ||
-    url.hostname.includes('via.placeholder.com') ||
-    /\.(jpg|jpeg|png|gif|webp|svg|ico)(\?|$)/i.test(url.pathname);
+  /* 2. Same-origin app assets (JS, CSS, manifest, sw) → cache on load, serve from cache when offline */
+  if (sameOrigin && (req.destination === 'script' || req.destination === 'style' || url.pathname.indexOf('/assets/') === 0 || url.pathname === '/manifest.json' || url.pathname === '/sw.js')) {
+    e.respondWith(
+      fetch(req).then(function (res) {
+        if (res.ok && res.type !== 'opaque') {
+          var clone = res.clone();
+          caches.open(APP_CACHE).then(function (c) { c.put(req, clone); });
+        }
+        return res;
+      }).catch(function () { return caches.match(req).then(function (r) { return r || new Response('Offline', { status: 503 }); }); })
+    );
+    return;
+  }
 
-  if (isImageRequest) {
-    event.respondWith(
-      caches.open(IMAGE_CACHE_NAME).then((cache) => {
-        return cache.match(event.request).then((cachedResponse) => {
-          if (cachedResponse) return cachedResponse;
-          return fetch(event.request)
-            .then((networkResponse) => {
-              if (networkResponse.ok && networkResponse.type !== 'opaque') {
-                try { cache.put(event.request, networkResponse.clone()); } catch (e) {}
-              }
-              return networkResponse;
-            })
-            .catch(() => {
-              return new Response(OFFLINE_IMAGE, {
-                headers: { 'Content-Type': 'image/svg+xml' }
-              });
-            });
+  /* 3. Images → cache first, then network; offline → placeholder */
+  var isImg = req.destination === 'image' || /\.(jpg|jpeg|png|gif|webp|svg|ico)(\?|$)/i.test(url.pathname) || /picsum\.photos|pexels\.com|ui-avatars|storage\.googleapis|supabase|flaticon|placeholder\.com/i.test(url.hostname);
+  if (isImg) {
+    e.respondWith(
+      caches.open(IMAGE_CACHE).then(function (c) {
+        return c.match(req).then(function (cached) {
+          if (cached) return cached;
+          return fetch(req).then(function (res) {
+            if (res.ok && res.type !== 'opaque') try { c.put(req, res.clone()); } catch (err) {}
+            return res;
+          }).catch(function () {
+            return new Response(OFFLINE_IMG, { headers: { 'Content-Type': 'image/svg+xml' } });
+          });
         });
       })
     );
     return;
   }
 
-  // 2b. VIDEOS (Cache for offline playback)
-  if (event.request.destination === 'video' ||
-    url.hostname.includes('storage.googleapis.com') && /\.(mp4|webm)(\?|$)/i.test(url.pathname)) {
-    event.respondWith(
-      caches.open(IMAGE_CACHE_NAME).then((cache) => {
-        return cache.match(event.request).then((cachedResponse) => {
-          if (cachedResponse) return cachedResponse;
-          return fetch(event.request)
-            .then((networkResponse) => {
-              if (networkResponse.ok && networkResponse.type === 'basic') {
-                cache.put(event.request, networkResponse.clone());
-              }
-              return networkResponse;
-            })
-            .catch(() => new Response('Offline', { status: 408 }));
+  /* 4. Video → cache first, then network */
+  if (req.destination === 'video' || (/storage\.googleapis\.com/i.test(url.hostname) && /\.(mp4|webm)(\?|$)/i.test(url.pathname))) {
+    e.respondWith(
+      caches.open(IMAGE_CACHE).then(function (c) {
+        return c.match(req).then(function (cached) {
+          if (cached) return cached;
+          return fetch(req).then(function (res) {
+            if (res.ok && res.type !== 'opaque') try { c.put(req, res.clone()); } catch (err) {}
+            return res;
+          }).catch(function () { return new Response('', { status: 408 }); });
         });
       })
     );
     return;
   }
 
-  // 3. UI ASSETS / SCRIPTS (Stale-While-Revalidate)
-  // Serve from cache immediately, then update cache in background.
-  if (
-    url.hostname.includes('esm.sh') || 
-    url.hostname.includes('fonts.googleapis.com') || 
-    url.hostname.includes('fonts.gstatic.com') ||
-    url.hostname.includes('tailwindcss.com')
-  ) {
-    event.respondWith(
-      caches.open(CACHE_NAME).then(async (cache) => {
-        const cachedResponse = await cache.match(event.request);
-        const fetchPromise = fetch(event.request).then((networkResponse) => {
-          if (networkResponse.ok) {
-            cache.put(event.request, networkResponse.clone());
-          }
-          return networkResponse;
-        }).catch(err => {
-            // Network failed, just return what we have (or nothing if cache is empty)
-            console.warn('[SW] Fetch failed for', event.request.url);
+  /* 5. External CDN (Tailwind, fonts) → cache first; offline → from cache */
+  if (/tailwindcss\.com|fonts\.googleapis|fonts\.gstatic|esm\.sh/i.test(url.hostname)) {
+    e.respondWith(
+      caches.open(EXTERNAL_CACHE).then(function (c) {
+        return c.match(req).then(function (cached) {
+          if (cached) return cached;
+          return fetch(req).then(function (res) {
+            if (res.ok) try { c.put(req, res.clone()); } catch (err) {}
+            return res;
+          }).catch(function () { return new Response('', { status: 503 }); });
         });
-
-        // Return cached response if available, otherwise wait for network
-        return cachedResponse || fetchPromise;
       })
     );
     return;
   }
 
-  // 4. API REQUESTS (Network First)
-  // Try network, if fails, look for cache (if we implemented API caching)
-  // For now, we rely on Dexie for data, so API calls are minimal.
-  event.respondWith(
-    fetch(event.request).catch(() => {
-        // Optional: Return a JSON fallback if needed
-        return new Response(JSON.stringify({ error: 'offline' }), { 
-            headers: { 'Content-Type': 'application/json' } 
-        });
+  /* 6. Other (API, etc.) → network first, offline → JSON */
+  e.respondWith(
+    fetch(req).catch(function () {
+      return new Response(JSON.stringify({ error: 'offline' }), { headers: { 'Content-Type': 'application/json' } });
     })
   );
 });
