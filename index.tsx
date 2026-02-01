@@ -7,18 +7,10 @@ if (!rootElement) {
   throw new Error("Could not find root element to mount to");
 }
 
-// Service Worker Registration (absolute path for PWA / Add to Home Screen)
+// Service Worker: ثبت زودهنگام تا قبل از لود منابع، کنترل صفحه زودتر گرفته شود
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    const swPath = import.meta.env.BASE_URL + 'sw.js';
-    navigator.serviceWorker.register(swPath)
-      .then((registration) => {
-        console.log('SW registered: ', registration);
-      })
-      .catch((registrationError) => {
-        console.log('SW registration failed: ', registrationError);
-      });
-  });
+  const swPath = import.meta.env.BASE_URL + 'sw.js';
+  navigator.serviceWorker.register(swPath, { scope: '/' }).catch(() => {});
 }
 
 const root = ReactDOM.createRoot(rootElement);

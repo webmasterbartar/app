@@ -33,16 +33,27 @@ const App: React.FC = () => {
     seedDatabase();
   }, []);
 
-  /* گرم‌کردن کش SW برای آفلاین: بعد از لود، دوباره document و اسکریپت اصلی را از طریق SW می‌گیریم تا حتماً کش شوند */
+  /* گرم‌کردن کش برای آفلاین: document و تمام اسکریپت/استایل اپ را از طریق SW می‌گیریم */
   useEffect(() => {
     if (!('serviceWorker' in navigator)) return;
-    const warm = () => {
-      fetch(window.location.pathname || '/').catch(() => {});
-      const script = document.querySelector('script[src*="/assets/"]') as HTMLScriptElement;
-      if (script?.src) fetch(script.src).catch(() => {});
+    const warmup = () => {
+      fetch(window.location.origin + '/index.html', { cache: 'reload' }).catch(() => {});
+      document.querySelectorAll<HTMLScriptElement>('script[src*="/assets/"]').forEach((el) => {
+        if (el.src) fetch(el.src, { cache: 'reload' }).catch(() => {});
+      });
+      document.querySelectorAll<HTMLLinkElement>('link[rel="stylesheet"][href*="/assets/"]').forEach((el) => {
+        if (el.href) fetch(el.href, { cache: 'reload' }).catch(() => {});
+      });
     };
-    const t = setTimeout(warm, 500);
-    return () => clearTimeout(t);
+    const onControllerChange = () => { warmup(); };
+    navigator.serviceWorker.addEventListener('controllerchange', onControllerChange);
+    const t1 = setTimeout(warmup, 800);
+    const t2 = setTimeout(warmup, 2500);
+    return () => {
+      navigator.serviceWorker.removeEventListener('controllerchange', onControllerChange);
+      clearTimeout(t1);
+      clearTimeout(t2);
+    };
   }, []);
 
   return (
