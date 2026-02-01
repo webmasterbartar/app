@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
-import { db, Product } from '../db';
+import { db, Product, getProductImage } from '../db';
 import { Search, Bell, SlidersHorizontal, Percent, ShoppingBag, X, Play, MoreHorizontal, Smartphone, Laptop, Watch, Headphones, Shirt, Footprints, Briefcase, Zap, Star, Flame, BookOpen, Clock, ChevronLeft, ArrowLeft, ArrowRight, History, TrendingUp, ChevronRight, Plus } from 'lucide-react';
 import { toPersianDigits, formatPrice, formatTime } from '../utils/persianUtils';
 import { Link, useNavigate } from 'react-router-dom';
@@ -78,27 +78,9 @@ const HeroSlider = () => {
     const [currentIndex, setCurrentIndex] = useState(0);
 
     const slides = [
-        {
-            id: 1,
-            image: "https://picsum.photos/800/400?random=hero1",
-            title: "جشنواره تابستانه",
-            subtitle: "تا ۷۰٪ تخفیف روی پوشاک",
-            color: "from-orange-500 to-red-600"
-        },
-        {
-            id: 2,
-            image: "https://picsum.photos/800/400?random=hero2",
-            title: "دنیای دیجیتال",
-            subtitle: "بروزترین گجت‌های هوشمند",
-            color: "from-blue-600 to-purple-600"
-        },
-        {
-            id: 3,
-            image: "https://picsum.photos/800/400?random=hero3",
-            title: "استایل ورزشی",
-            subtitle: "شروع یک تغییر بزرگ",
-            color: "from-green-500 to-teal-600"
-        }
+        { id: 1, image: "/content/heroes/1.jpg", title: "جشنواره تابستانه", subtitle: "تا ۷۰٪ تخفیف روی پوشاک", color: "from-orange-500 to-red-600" },
+        { id: 2, image: "/content/heroes/2.jpg", title: "دنیای دیجیتال", subtitle: "بروزترین گجت‌های هوشمند", color: "from-blue-600 to-purple-600" },
+        { id: 3, image: "/content/heroes/3.jpg", title: "استایل ورزشی", subtitle: "شروع یک تغییر بزرگ", color: "from-green-500 to-teal-600" }
     ];
 
     useEffect(() => {
@@ -168,14 +150,14 @@ const PromoBanners = () => {
     return (
         <div className="grid grid-cols-2 gap-3 px-4 mt-6">
             <div className="relative h-32 rounded-2xl overflow-hidden bg-gray-100 group cursor-pointer">
-                <img src="https://picsum.photos/300/300?random=promo1" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                <img src="/content/promos/1.jpg" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt="" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex flex-col justify-end p-3">
                     <span className="text-white font-bold text-sm">اکسسوری</span>
                     <span className="text-gray-300 text-[10px]">تکمیل استایل شما</span>
                 </div>
             </div>
             <div className="relative h-32 rounded-2xl overflow-hidden bg-gray-100 group cursor-pointer">
-                <img src="https://picsum.photos/300/300?random=promo2" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                <img src="/content/promos/2.jpg" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt="" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex flex-col justify-end p-3">
                     <span className="text-white font-bold text-sm">گیمینگ</span>
                     <span className="text-gray-300 text-[10px]">تجهیزات حرفه‌ای</span>
@@ -347,7 +329,7 @@ const Shop: React.FC = () => {
                                             className="flex items-center gap-3 p-3 hover:bg-gray-50 rounded-xl cursor-pointer transition-colors border-b border-gray-50 last:border-0"
                                         >
                                             <div className="w-10 h-10 bg-gray-100 rounded-lg overflow-hidden shrink-0">
-                                                <img src={p.image} className="w-full h-full object-cover mix-blend-multiply" />
+                                                <img src={getProductImage(p)} className="w-full h-full object-cover mix-blend-multiply" alt="" />
                                             </div>
                                             <div className="flex-1">
                                                 <p className="text-sm font-bold text-gray-800 line-clamp-1">{p.title}</p>
@@ -431,7 +413,7 @@ const Shop: React.FC = () => {
                         <div className="relative">
                             <div className="w-[66px] h-[66px] rounded-full p-[2px] border border-gray-200">
                                 <img
-                                    src="https://picsum.photos/200/200?random=me"
+                                    src="/content/avatars/me.jpg"
                                     className="w-full h-full object-cover rounded-full"
                                     alt="Your Story"
                                 />
@@ -447,7 +429,7 @@ const Shop: React.FC = () => {
                     <div className="flex flex-col items-center gap-1.5 min-w-[66px] cursor-pointer">
                         <div className="w-[66px] h-[66px] rounded-full p-[2.5px] bg-gradient-to-tr from-[#f9ce34] via-[#ee2a7b] to-[#6228d7]">
                             <div className="w-full h-full bg-white rounded-full p-[2px] overflow-hidden">
-                                <img src="https://picsum.photos/100/100?random=story1" className="w-full h-full object-cover rounded-full" />
+                                <img src="/content/avatars/story1.jpg" className="w-full h-full object-cover rounded-full" alt="" />
                             </div>
                         </div>
                         <span className="text-[11px] font-normal text-gray-800">جدیدترین‌ها</span>
@@ -502,7 +484,7 @@ const Shop: React.FC = () => {
                             {amazingProducts.map(p => (
                                 <Link to={`/product/${p.id}`} key={p.id} className="min-w-[160px] max-w-[160px] bg-white rounded-2xl p-3 flex flex-col gap-2 shadow-lg relative group active:scale-95 transition-transform">
                                     <div className="relative aspect-square bg-gray-50 rounded-xl overflow-hidden">
-                                        <img src={p.image} className="w-full h-full object-cover mix-blend-multiply group-hover:scale-110 transition-transform duration-500" loading="lazy" />
+                                        <img src={getProductImage(p)} className="w-full h-full object-cover mix-blend-multiply group-hover:scale-110 transition-transform duration-500" loading="lazy" alt="" />
                                         {p.originalPrice && p.originalPrice > p.price && (
                                             <span className="absolute bottom-1 right-1 bg-[#ef4056] text-white text-[10px] px-1.5 py-0.5 rounded-md font-bold shadow-sm">
                                                 {toPersianDigits(Math.round(((p.originalPrice - p.price) / p.originalPrice) * 100))}%
@@ -573,7 +555,7 @@ const Shop: React.FC = () => {
                         className="bg-white border border-gray-100 rounded-2xl p-3 flex flex-col gap-2 shadow-sm hover:shadow-md transition-all active:scale-[0.98]"
                     >
                         <div className="aspect-square bg-gray-50 rounded-xl overflow-hidden relative">
-                            <img src={p.image} className="w-full h-full object-cover mix-blend-multiply" loading="lazy" />
+                            <img src={getProductImage(p)} className="w-full h-full object-cover mix-blend-multiply" loading="lazy" alt="" />
                             <button className="absolute top-2 right-2 bg-white/80 backdrop-blur p-1.5 rounded-full text-gray-400 hover:text-red-500 transition-colors">
                                 <div className="w-3 h-3 border-2 border-current rounded-full" />
                             </button>

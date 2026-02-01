@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { db, Product, Variant } from '../db';
+import { db, Product, Variant, getProductImage } from '../db';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { useCart } from '../contexts/CartContext';
 import { Heart, Share2, Star, Truck, ShieldCheck, Store, ArrowRight, ShoppingCart, Clapperboard, Play, ChevronDown, ChevronUp, Check, Info, Maximize2, MessageSquarePlus, User, X, Layers, AlertCircle, RotateCcw, ShoppingBag, Zap } from 'lucide-react';
@@ -170,7 +170,7 @@ const ProductDetail: React.FC = () => {
     if (!id) return [];
     const productId = parseInt(id);
     const allPosts = await db.posts.toArray();
-    return allPosts.filter(p => p.productIds.includes(productId));
+    return allPosts.filter(p => ((p as any).product_ids ?? (p as any).productIds ?? []).includes(productId));
   }, [id]);
 
   // UI States
@@ -218,7 +218,7 @@ const ProductDetail: React.FC = () => {
     : null;
 
   const displayPrice = activeVariant ? activeVariant.price : product?.price;
-  const displayOriginalPrice = activeVariant ? activeVariant.originalPrice : product?.originalPrice;
+  const displayOriginalPrice = activeVariant ? ((activeVariant as any).original_price ?? (activeVariant as any).originalPrice) : ((product as any)?.original_price ?? (product as any)?.originalPrice);
 
   // Stock Logic
   const currentStock = activeVariant
@@ -228,12 +228,11 @@ const ProductDetail: React.FC = () => {
   const isOutOfStock = currentStock === 0;
   const isLowStock = currentStock > 0 && currentStock < 5;
 
-  // Mock Data & Dynamic Images
   const productImages = product ? [
-    (activeVariant?.image || product.image),
-    `https://picsum.photos/400/400?random=${product.id + 10}`,
-    `https://picsum.photos/400/400?random=${product.id + 20}`,
-    `https://picsum.photos/400/400?random=${product.id + 30}`,
+    (activeVariant?.image || getProductImage(product)),
+    `/content/products/${Math.min(product.id + 1, 8)}.jpg`,
+    `/content/products/${Math.min(product.id + 2, 8)}.jpg`,
+    `/content/products/${Math.min(product.id + 3, 8)}.jpg`,
   ] : [];
 
   // Reset image index when variant changes to show the new primary image

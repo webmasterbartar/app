@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useCart } from '../contexts/CartContext';
-import { db, Product } from '../db';
+import { db, Product, getProductImage } from '../db';
 import { Trash2, Minus, Plus, ArrowRight, ShoppingBag, Receipt, Ticket, ShieldCheck, Truck, ChevronLeft, CreditCard } from 'lucide-react';
 import { toPersianDigits, formatPrice } from '../utils/persianUtils';
 import { useNavigate } from 'react-router-dom';
@@ -127,7 +127,7 @@ const Cart: React.FC = () => {
                             className="w-24 h-24 bg-gray-50 rounded-2xl overflow-hidden shrink-0 cursor-pointer"
                             onClick={() => navigate(`/product/${product.id}`)}
                         >
-                            <img src={product.image} className="w-full h-full object-cover mix-blend-multiply group-hover:scale-105 transition-transform duration-500" alt={product.title} />
+                            <img src={getProductImage(product)} className="w-full h-full object-cover mix-blend-multiply group-hover:scale-105 transition-transform duration-500" alt={product.title} />
                         </div>
 
                         {/* Info */}

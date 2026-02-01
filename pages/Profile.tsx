@@ -21,50 +21,11 @@ interface Highlight {
 }
 
 const HIGHLIGHTS: Highlight[] = [
-    {
-        id: 1,
-        title: 'New In',
-        cover: 'https://picsum.photos/200/200?random=50',
-        stories: [
-            { id: 101, image: 'https://images.pexels.com/photos/934070/pexels-photo-934070.jpeg?auto=compress&cs=tinysrgb&w=800', duration: 4 },
-            { id: 102, image: 'https://images.pexels.com/photos/3755706/pexels-photo-3755706.jpeg?auto=compress&cs=tinysrgb&w=800', duration: 4 }
-        ]
-    },
-    {
-        id: 2,
-        title: 'Events',
-        cover: 'https://picsum.photos/200/200?random=51',
-        stories: [
-            { id: 201, image: 'https://images.pexels.com/photos/1190298/pexels-photo-1190298.jpeg?auto=compress&cs=tinysrgb&w=800', duration: 3 },
-            { id: 202, image: 'https://images.pexels.com/photos/1763075/pexels-photo-1763075.jpeg?auto=compress&cs=tinysrgb&w=800', duration: 3 },
-            { id: 203, image: 'https://images.pexels.com/photos/1540406/pexels-photo-1540406.jpeg?auto=compress&cs=tinysrgb&w=800', duration: 3 }
-        ]
-    },
-    {
-        id: 3,
-        title: 'Travel',
-        cover: 'https://picsum.photos/200/200?random=52',
-        stories: [
-            { id: 301, image: 'https://images.pexels.com/photos/3278215/pexels-photo-3278215.jpeg?auto=compress&cs=tinysrgb&w=800', duration: 5 }
-        ]
-    },
-    {
-        id: 4,
-        title: 'Tech',
-        cover: 'https://picsum.photos/200/200?random=53',
-        stories: [
-            { id: 401, image: 'https://images.pexels.com/photos/3589903/pexels-photo-3589903.jpeg?auto=compress&cs=tinysrgb&w=800', duration: 4 },
-            { id: 402, image: 'https://images.pexels.com/photos/1092644/pexels-photo-1092644.jpeg?auto=compress&cs=tinysrgb&w=800', duration: 4 }
-        ]
-    },
-    {
-        id: 5,
-        title: 'Lifestyle',
-        cover: 'https://picsum.photos/200/200?random=54',
-        stories: [
-            { id: 501, image: 'https://images.pexels.com/photos/70497/pexels-photo-70497.jpeg?auto=compress&cs=tinysrgb&w=800', duration: 4 }
-        ]
-    }
+    { id: 1, title: 'New In', cover: '/content/avatars/story-1.jpg', stories: [{ id: 101, image: '/content/blogs/1.jpg', duration: 4 }, { id: 102, image: '/content/blogs/2.jpg', duration: 4 }] },
+    { id: 2, title: 'Events', cover: '/content/avatars/story-2.jpg', stories: [{ id: 201, image: '/content/blogs/2.jpg', duration: 3 }, { id: 202, image: '/content/blogs/3.jpg', duration: 3 }, { id: 203, image: '/content/reels/thumbnails/1.jpg', duration: 3 }] },
+    { id: 3, title: 'Travel', cover: '/content/avatars/story-3.jpg', stories: [{ id: 301, image: '/content/reels/thumbnails/2.jpg', duration: 5 }] },
+    { id: 4, title: 'Tech', cover: '/content/avatars/story-4.jpg', stories: [{ id: 401, image: '/content/reels/thumbnails/3.jpg', duration: 4 }, { id: 402, image: '/content/reels/thumbnails/4.jpg', duration: 4 }] },
+    { id: 5, title: 'Lifestyle', cover: '/content/avatars/story-5.jpg', stories: [{ id: 501, image: '/content/blogs/1.jpg', duration: 4 }] }
 ];
 
 // --- Skeleton Component ---
@@ -442,7 +403,7 @@ const Profile: React.FC = () => {
                     <div className="relative shrink-0">
                         <div className="w-[86px] h-[86px] rounded-full p-[2px] story-gradient cursor-pointer">
                             <div className="w-full h-full rounded-full border-[2px] border-white overflow-hidden">
-                                <img src="https://picsum.photos/200/200?random=me" className="w-full h-full object-cover" alt="Profile" />
+                                <img src="/content/avatars/me.jpg" className="w-full h-full object-cover" alt="Profile" />
                             </div>
                         </div>
                         <div className="absolute bottom-0 right-0 bg-[#0095f6] text-white w-6 h-6 rounded-full flex items-center justify-center border-[2px] border-white cursor-pointer">
@@ -488,8 +449,8 @@ const Profile: React.FC = () => {
                     {/* Followed by */}
                     <div className="flex items-center gap-1.5 mt-3 text-[12px]">
                         <div className="flex -space-x-1.5">
-                            <img src="https://picsum.photos/50/50?random=1" className="w-4 h-4 rounded-full border border-white" />
-                            <img src="https://picsum.photos/50/50?random=2" className="w-4 h-4 rounded-full border border-white" />
+                            <img src="/content/avatars/reel-1.jpg" className="w-4 h-4 rounded-full border border-white" alt="" />
+                            <img src="/content/avatars/reel-2.jpg" className="w-4 h-4 rounded-full border border-white" alt="" />
                         </div>
                         <span className="text-gray-500">Followed by <span className="font-semibold text-black">user1</span>, <span className="font-semibold text-black">user2</span> + 12 more</span>
                     </div>

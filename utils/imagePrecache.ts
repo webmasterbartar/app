@@ -18,7 +18,9 @@ const CACHEABLE_IMAGE_DOMAINS = [
 
 /** Check if URL is an image we should cache */
 export function isImageUrl(url: string): boolean {
-  if (!url || typeof url !== 'string' || !url.startsWith('http')) return false;
+  if (!url || typeof url !== 'string') return false;
+  if (url.startsWith('/') && (url.startsWith('/content/') || /\.(jpg|jpeg|png|gif|webp|svg|ico)(\?|$)/i.test(url))) return true;
+  if (!url.startsWith('http')) return false;
   try {
     const host = new URL(url).hostname;
     if (CACHEABLE_IMAGE_DOMAINS.some((d) => host.includes(d))) return true;
@@ -35,12 +37,13 @@ async function cacheImage(url: string): Promise<boolean> {
   if (!isImageUrl(url)) return false;
   try {
     if (!('caches' in window)) return false;
+    const fullUrl = url.startsWith('/') ? window.location.origin + url : url;
     const cache = await caches.open(IMAGE_CACHE_NAME);
-    const existing = await cache.match(url);
+    const existing = await cache.match(fullUrl);
     if (existing) return true;
-    const res = await fetch(url, { mode: 'cors' });
+    const res = await fetch(fullUrl, { mode: url.startsWith('/') ? 'same-origin' : 'cors' });
     if (res.ok) {
-      await cache.put(url, res.clone());
+      await cache.put(fullUrl, res.clone());
       return true;
     }
     return false;
@@ -70,45 +73,27 @@ export function collectAllImageUrls(data?: {
 }): string[] {
   const urls: string[] = [];
 
-  // Static hardcoded URLs used across the app
+  // Static content on our server (public/content/)
   const staticUrls = [
-    'https://picsum.photos/200/200?random=me',
-    'https://picsum.photos/100/100?random=me',
-    'https://picsum.photos/200/200?random=story1',
-    'https://picsum.photos/800/400?random=hero1',
-    'https://picsum.photos/800/400?random=hero2',
-    'https://picsum.photos/800/400?random=hero3',
-    'https://picsum.photos/300/300?random=promo1',
-    'https://picsum.photos/300/300?random=promo2',
-    'https://picsum.photos/100/100?random=store',
-    'https://cdn-icons-png.flaticon.com/512/3059/3059463.png',
-    // Profile highlights & stories
-    'https://picsum.photos/200/200?random=50',
-    'https://picsum.photos/200/200?random=51',
-    'https://picsum.photos/200/200?random=52',
-    'https://picsum.photos/200/200?random=53',
-    'https://picsum.photos/200/200?random=54',
-    'https://images.pexels.com/photos/934070/pexels-photo-934070.jpeg?auto=compress&cs=tinysrgb&w=800',
-    'https://images.pexels.com/photos/3755706/pexels-photo-3755706.jpeg?auto=compress&cs=tinysrgb&w=800',
-    'https://images.pexels.com/photos/1190298/pexels-photo-1190298.jpeg?auto=compress&cs=tinysrgb&w=800',
-    'https://images.pexels.com/photos/1763075/pexels-photo-1763075.jpeg?auto=compress&cs=tinysrgb&w=800',
-    'https://images.pexels.com/photos/1540406/pexels-photo-1540406.jpeg?auto=compress&cs=tinysrgb&w=800',
-    'https://images.pexels.com/photos/3278215/pexels-photo-3278215.jpeg?auto=compress&cs=tinysrgb&w=800',
-    'https://images.pexels.com/photos/3589903/pexels-photo-3589903.jpeg?auto=compress&cs=tinysrgb&w=800',
-    'https://images.pexels.com/photos/1092644/pexels-photo-1092644.jpeg?auto=compress&cs=tinysrgb&w=800',
-    'https://images.pexels.com/photos/70497/pexels-photo-70497.jpeg?auto=compress&cs=tinysrgb&w=800',
-    // ReelCard album art placeholders
-    ...Array.from({ length: 8 }, (_, i) => `https://picsum.photos/50/50?random=${i + 1}`),
-    ...Array.from({ length: 8 }, (_, i) => `https://picsum.photos/100/100?random=${i + 1}`),
+    '/content/avatars/me.jpg',
+    '/content/avatars/me-small.jpg',
+    '/content/avatars/story1.jpg',
+    '/content/heroes/1.jpg',
+    '/content/heroes/2.jpg',
+    '/content/heroes/3.jpg',
+    '/content/promos/1.jpg',
+    '/content/promos/2.jpg',
+    '/content/avatars/store.jpg',
+    '/content/icons/app.png',
+    ...Array.from({ length: 5 }, (_, i) => `/content/avatars/story-${i + 1}.jpg`),
+    ...Array.from({ length: 8 }, (_, i) => `/content/avatars/reel-${i + 1}.jpg`),
+    ...Array.from({ length: 8 }, (_, i) => `/content/products/${i + 1}.jpg`),
+    '/content/products/11.jpg',
+    '/content/products/22.jpg',
+    ...Array.from({ length: 4 }, (_, i) => `/content/reels/thumbnails/${i + 1}.jpg`),
+    ...Array.from({ length: 3 }, (_, i) => `/content/blogs/${i + 1}.jpg`),
   ];
   urls.push(...staticUrls);
-
-  // Product detail gallery placeholders
-  for (let i = 1; i <= 10; i++) {
-    urls.push(`https://picsum.photos/400/400?random=${i + 10}`);
-    urls.push(`https://picsum.photos/400/400?random=${i + 20}`);
-    urls.push(`https://picsum.photos/400/400?random=${i + 30}`);
-  }
 
   // Dynamic data from Dexie
   if (data?.products) {

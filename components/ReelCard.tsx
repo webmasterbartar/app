@@ -1,6 +1,6 @@
 
 import React, { useRef, useState, useEffect } from 'react';
-import { Post, Product, db } from '../db';
+import { Post, Product, db, getProductImage } from '../db';
 import { Heart, MessageCircle, Send, MoreHorizontal, ShoppingBag, X, WifiOff, RotateCcw, Plus, Check, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { formatPrice } from '../utils/persianUtils';
@@ -30,15 +30,16 @@ const ReelCard: React.FC<ReelCardProps> = ({ post, isActive, shouldPreload, isMu
     const [isLiked, setIsLiked] = useState(false);
     const lastTapRef = useRef<number>(0);
 
+    const productIds = (post as any).product_ids ?? (post as any).productIds ?? [];
     useEffect(() => {
         const fetchProducts = async () => {
-            if (post.productIds && post.productIds.length > 0) {
-                const products = await db.products.bulkGet(post.productIds);
+            if (productIds.length > 0) {
+                const products = await db.products.bulkGet(productIds);
                 setLinkedProducts(products.filter(p => p !== undefined) as Product[]);
             }
         };
         fetchProducts();
-    }, [post.productIds]);
+    }, [productIds.join(',')]);
 
     useEffect(() => {
         if (isActive && !videoError) {
@@ -90,8 +91,9 @@ const ReelCard: React.FC<ReelCardProps> = ({ post, isActive, shouldPreload, isMu
         lastTapRef.current = now;
     };
 
+    const videoUrl = (post as any).video_url ?? (post as any).videoUrl ?? '';
     const handleVideoError = (e: React.SyntheticEvent<HTMLVideoElement, Event>) => {
-        console.error("Video load error for:", post.videoUrl);
+        console.error("Video load error for:", videoUrl);
         setVideoError(true);
     };
 
@@ -123,7 +125,7 @@ const ReelCard: React.FC<ReelCardProps> = ({ post, isActive, shouldPreload, isMu
                 {!videoError ? (
                     <video
                         ref={videoRef}
-                        src={post.videoUrl}
+                        src={videoUrl}
                         className="w-full h-full object-cover"
                         playsInline
                         muted={isMuted}
@@ -205,7 +207,7 @@ const ReelCard: React.FC<ReelCardProps> = ({ post, isActive, shouldPreload, isMu
                 {/* Album Art / Audio Icon */}
                 <div className="mt-4 relative">
                     <div className="w-8 h-8 rounded-lg border-2 border-white/90 overflow-hidden bg-gray-800 animate-spin-slower">
-                        <img src={`https://picsum.photos/50/50?random=${post.id}`} className="w-full h-full object-cover" />
+                        <img src={`/content/avatars/reel-${post.id}.jpg`} className="w-full h-full object-cover" alt="" />
                     </div>
                     {/* Musical Note small icon can be added here if needed */}
                 </div>
@@ -215,7 +217,7 @@ const ReelCard: React.FC<ReelCardProps> = ({ post, isActive, shouldPreload, isMu
             <div className={`absolute left-0 bottom-0 right-0 z-20 px-4 pb-6 pt-10 bg-gradient-to-t from-black/80 via-black/40 to-transparent transition-all duration-300 ${showQuickView ? 'opacity-0 blur-sm pointer-events-none' : 'opacity-100'}`}>
                 <div className="flex items-center gap-3 mb-3">
                     <div className="w-8 h-8 rounded-full overflow-hidden border border-white/40 ring-1 ring-white/20 ring-offset-1 ring-offset-transparent">
-                        <img src={`https://picsum.photos/100/100?random=store`} className="w-full h-full object-cover" />
+                        <img src="/content/avatars/store.jpg" className="w-full h-full object-cover" alt="" />
                     </div>
                     <span className="font-bold text-[14px] text-white tracking-tight drop-shadow-md">digigram_store</span>
                     <button className="ml-1 bg-white/10 hover:bg-white/20 px-3 py-1 rounded-lg text-[12px] font-bold text-white backdrop-blur-md border border-white/20 transition-colors">Follow</button>
@@ -293,7 +295,7 @@ const ReelCard: React.FC<ReelCardProps> = ({ post, isActive, shouldPreload, isMu
                             {linkedProducts.map(p => (
                                 <div key={p.id} className="flex gap-3 bg-white p-2.5 rounded-2xl border border-gray-100 shadow-sm relative group">
                                     <Link to={`/product/${p.id}`} className="w-20 h-20 bg-gray-50 rounded-xl overflow-hidden shrink-0">
-                                        <img src={p.image} className="w-full h-full object-cover mix-blend-multiply" alt={p.title} />
+                                        <img src={getProductImage(p)} className="w-full h-full object-cover mix-blend-multiply" alt={p.title} />
                                     </Link>
                                     <div className="flex-1 flex flex-col justify-between py-0.5 min-w-0">
                                         <Link to={`/product/${p.id}`} className="text-xs font-bold text-gray-800 line-clamp-2 leading-5">
@@ -301,9 +303,9 @@ const ReelCard: React.FC<ReelCardProps> = ({ post, isActive, shouldPreload, isMu
                                         </Link>
                                         <div className="flex items-center justify-between mt-2">
                                             <div className="flex flex-col">
-                                                {p.originalPrice && (
+                                                {((p as any).original_price ?? (p as any).originalPrice) && (
                                                     <span className="text-[10px] text-gray-400 line-through decoration-red-400">
-                                                        {formatPrice(p.originalPrice)}
+                                                        {formatPrice((p as any).original_price ?? (p as any).originalPrice ?? 0)}
                                                     </span>
                                                 )}
                                                 <span className="font-bold text-sm text-gray-900">
@@ -334,7 +336,7 @@ const ReelCard: React.FC<ReelCardProps> = ({ post, isActive, shouldPreload, isMu
 
             {/* View Products Pill (Trigger / Mini Preview) */}
             <AnimatePresence>
-                {post.productIds.length > 0 && !showQuickView && (
+                {productIds.length > 0 && !showQuickView && (
                     <motion.div
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -349,7 +351,7 @@ const ReelCard: React.FC<ReelCardProps> = ({ post, isActive, shouldPreload, isMu
                                 <>
                                     {/* Thumbnail */}
                                     <div className="w-10 h-10 rounded-full bg-white overflow-hidden shrink-0 border border-white/20 relative z-10">
-                                        <img src={linkedProducts[0].image} className="w-full h-full object-cover" alt="product" />
+                                        <img src={getProductImage(linkedProducts[0])} className="w-full h-full object-cover" alt="product" />
                                     </div>
 
                                     {/* Info */}

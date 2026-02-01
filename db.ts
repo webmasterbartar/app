@@ -54,6 +54,12 @@ export interface CartItem {
   quantity: number;
 }
 
+/** Use for display: supports both image_url (API) and image (legacy seed). */
+export function getProductImage(p: Product | { image_url?: string; image?: string } | null): string {
+  if (!p) return '';
+  return (p as any).image_url ?? (p as any).image ?? '';
+}
+
 // Keeping Dexie for Local Cart only, or as a cache (optional)
 // For this migration, we primarily focus on API types.
 // If you use Dexie for products, you must migrate the data or clear DB.
@@ -96,84 +102,84 @@ export const seedDatabase = async () => {
       id: 1,
       title: "هدفون بی‌سیم مدل Sony WH-1000XM5",
       price: 12500000,
-      originalPrice: 14000000,
-      image: "https://picsum.photos/400/400?random=1",
+      original_price: 14000000,
+      image_url: "/content/products/1.jpg",
       category: "هدفون",
       description: "بهترین هدفون نویز کنسلینگ سونی با کیفیت صدای بی‌نظیر.",
       rating: 4.8,
-      isAmazing: true,
+      is_amazing: true,
       stock_count: 5,
       specifications: [{ label: 'وزن', value: '250 گرم' }, { label: 'باتری', value: '30 ساعت' }],
       variants: [
-        { name: "مشکی", price: 12500000, originalPrice: 14000000, stock: 5 },
-        { name: "نقره‌ای", price: 13200000, originalPrice: 15500000, image: "https://picsum.photos/400/400?random=11", stock: 2 }
+        { name: "مشکی", price: 12500000, original_price: 14000000, stock: 5 },
+        { name: "نقره‌ای", price: 13200000, original_price: 15500000, image: "/content/products/11.jpg", stock: 2 }
       ]
     },
     {
       id: 2,
       title: "ساعت هوشمند اپل واچ سری ۹",
       price: 18900000,
-      image: "https://picsum.photos/400/400?random=2",
+      image_url: "/content/products/2.jpg",
       category: "ساعت",
       description: "صفحه نمایش همیشه روشن، سنسورهای سلامتی پیشرفته.",
       rating: 4.9,
-      isAmazing: false,
+      is_amazing: false,
       stock_count: 12,
       specifications: [{ label: 'اندازه', value: '45mm' }, { label: 'ضدآب', value: 'بله' }],
       variants: [
         { name: "41 میلی‌متر", price: 18900000, stock: 10 },
-        { name: "45 میلی‌متر", price: 19800000, image: "https://picsum.photos/400/400?random=22", stock: 2 }
+        { name: "45 میلی‌متر", price: 19800000, image: "/content/products/22.jpg", stock: 2 }
       ]
     },
     {
       id: 3,
       title: "کفش ورزشی نایکی مدل Air Zoom",
       price: 4500000,
-      originalPrice: 5200000,
-      image: "https://picsum.photos/400/400?random=3",
+      original_price: 5200000,
+      image_url: "/content/products/3.jpg",
       category: "مد و پوشاک",
       description: "مناسب برای دویدن‌های طولانی و استفاده روزمره.",
       rating: 4.5,
-      isAmazing: true,
+      is_amazing: true,
       stock_count: 20,
       variants: [
-        { name: "سایز ۴۰", price: 4500000, originalPrice: 5200000, stock: 5 },
-        { name: "سایز ۴۱", price: 4500000, originalPrice: 5200000, stock: 5 },
-        { name: "سایز ۴۲", price: 4500000, originalPrice: 5200000, stock: 0 }
+        { name: "سایز ۴۰", price: 4500000, original_price: 5200000, stock: 5 },
+        { name: "سایز ۴۱", price: 4500000, original_price: 5200000, stock: 5 },
+        { name: "سایز ۴۲", price: 4500000, original_price: 5200000, stock: 0 }
       ]
     },
     {
       id: 4,
       title: "دوربین عکاسی کانون EOS R5",
       price: 145000000,
-      image: "https://picsum.photos/400/400?random=4",
+      image_url: "/content/products/4.jpg",
       category: "عکاسی",
       description: "دوربین فول فریم بدون آینه با قابلیت فیلمبرداری 8K.",
       rating: 5.0,
-      isAmazing: false,
+      is_amazing: false,
       stock_count: 3
     },
     {
       id: 5,
       title: "کوله پشتی کوهنوردی دیوتر",
       price: 3200000,
-      image: "https://picsum.photos/400/400?random=5",
+      image_url: "/content/products/5.jpg",
       category: "سفر و ورزش",
       description: "مقاوم در برابر آب، مناسب سفرهای ۳ روزه.",
       rating: 4.7,
-      isAmazing: false,
+      is_amazing: false,
       stock_count: 15
     },
     {
       id: 6,
       title: "لپ‌تاپ مک‌بوک پرو M3",
       price: 85000000,
-      originalPrice: 89000000,
-      image: "https://picsum.photos/400/400?random=6",
+      original_price: 89000000,
+      image_url: "/content/products/6.jpg",
       category: "لپ‌تاپ",
       description: "قدرتمندترین لپ‌تاپ اپل با پردازنده M3.",
       rating: 4.9,
-      isAmazing: true,
+      is_amazing: true,
       stock_count: 8,
       specifications: [{ label: 'پردازنده', value: 'M3 Pro' }, { label: 'رم', value: '18GB' }]
     },
@@ -181,22 +187,22 @@ export const seedDatabase = async () => {
       id: 7,
       title: "کیف چرمی دوشی زنانه",
       price: 1200000,
-      image: "https://picsum.photos/400/400?random=7",
+      image_url: "/content/products/7.jpg",
       category: "کیف",
       description: "چرم طبیعی دست‌دوز با طراحی کلاسیک.",
       rating: 4.3,
-      isAmazing: false,
+      is_amazing: false,
       stock_count: 0
     },
     {
       id: 8,
       title: "پاوربانک ۲۰۰۰۰ میلی‌آمپر انکر",
       price: 2500000,
-      image: "https://picsum.photos/400/400?random=8",
+      image_url: "/content/products/8.jpg",
       category: "لوازم الکترونیکی",
       description: "شارژ سریع با قابلیت شارژ همزمان سه دستگاه.",
       rating: 4.6,
-      isAmazing: true,
+      is_amazing: true,
       stock_count: 50
     }
   ];
@@ -206,35 +212,35 @@ export const seedDatabase = async () => {
   const posts: Post[] = [
     {
       id: 1,
-      videoUrl: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4",
-      thumbnail: "https://picsum.photos/400/600?random=101",
+      video_url: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4",
+      thumbnail: "/content/reels/thumbnails/1.jpg",
       caption: "تجربه سکوت مطلق با Sony WH-1000XM5 🎧 #سونی #هدفون #موسیقی",
       likes: 1205,
-      productIds: [1]
+      product_ids: [1]
     },
     {
       id: 2,
-      videoUrl: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
-      thumbnail: "https://picsum.photos/400/600?random=102",
+      video_url: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+      thumbnail: "/content/reels/thumbnails/2.jpg",
       caption: "دویدن صبحگاهی با اپل واچ سری ۹ 🏃‍♀️ #AppleWatch #ورزش",
       likes: 3400,
-      productIds: [2]
+      product_ids: [2]
     },
     {
       id: 3,
-      videoUrl: "https://storage.googleapis.com/gtv-videos-bucket/sample/SubaruOutbackOnStreetAndDirt.mp4",
-      thumbnail: "https://picsum.photos/400/600?random=103",
+      video_url: "https://storage.googleapis.com/gtv-videos-bucket/sample/SubaruOutbackOnStreetAndDirt.mp4",
+      thumbnail: "/content/reels/thumbnails/3.jpg",
       caption: "رکوردشکنی امروز با نایکی 👟 #Nike #JustDoIt",
       likes: 859,
-      productIds: [3]
+      product_ids: [3]
     },
     {
       id: 4,
-      videoUrl: "https://storage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4",
-      thumbnail: "https://picsum.photos/400/600?random=104",
+      video_url: "https://storage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4",
+      thumbnail: "/content/reels/thumbnails/4.jpg",
       caption: "مناظر زیبا در ارتفاعات 🏔️ #کوهنوردی #طبیعت",
       likes: 2100,
-      productIds: [5]
+      product_ids: [5]
     }
   ];
 
@@ -246,7 +252,7 @@ export const seedDatabase = async () => {
       title: "راهنمای خرید بهترین هدفون نویز کنسلینگ ۲۰۲۴",
       excerpt: "اگر به دنبال سکوت مطلق هستید و می‌خواهید از موسیقی لذت ببرید، این راهنما برای شماست.",
       content: "در دنیای شلوغ امروز، داشتن یک هدفون نویز کنسلینگ خوب از نان شب واجب‌تر است. در این مقاله به بررسی مدل‌های سونی، اپل و بوز می‌پردازیم. \n\n سونی WH-1000XM5: پادشاه سکوت...",
-      cover_image: "https://picsum.photos/800/600?random=201",
+      cover_image: "/content/blogs/1.jpg",
       author: "تیم تحریریه",
       category: "تکنولوژی",
       read_time: 5,
@@ -257,7 +263,7 @@ export const seedDatabase = async () => {
       title: "۵ ترفند مخفی اپل واچ که باید بدانید",
       excerpt: "با این ترفندها از ساعت هوشمند خود حرفه‌ای‌تر استفاده کنید.",
       content: "اپل واچ فقط یک ساعت نیست، یک کامپیوتر مچی است. آیا می‌دانستید می‌توانید با ژست‌های حرکتی به تماس‌ها پاسخ دهید؟",
-      cover_image: "https://picsum.photos/800/600?random=202",
+      cover_image: "/content/blogs/2.jpg",
       author: "علی محمدی",
       category: "آموزش",
       read_time: 3,
@@ -268,7 +274,7 @@ export const seedDatabase = async () => {
       title: "استایل ورزشی ترند تابستان امسال",
       excerpt: "چه لباس‌هایی برای ورزش در هوای گرم مناسب هستند؟",
       content: "انتخاب لباس ورزشی مناسب نه تنها به زیبایی شما کمک می‌کند، بلکه عملکرد ورزشی شما را نیز بهبود می‌بخشد.",
-      cover_image: "https://picsum.photos/800/600?random=203",
+      cover_image: "/content/blogs/3.jpg",
       author: "سارا فراهانی",
       category: "مد و استایل",
       read_time: 4,

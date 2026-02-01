@@ -95,7 +95,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 <Link key={index} to={item.path} className="flex items-center justify-center w-12 h-full relative">
                   <div className={`w-[28px] h-[28px] rounded-full p-[2px] transition-all duration-300 ${active ? 'border-[#ef4056] border-2' : 'border-transparent'}`}>
                     <img
-                      src="https://picsum.photos/200/200?random=me"
+                      src="/content/avatars/me.jpg"
                       alt="profile"
                       className="w-full h-full rounded-full object-cover border border-gray-100"
                     />

@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { db, Product } from '../db';
+import { db, Product, getProductImage } from '../db';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { ArrowRight, SlidersHorizontal, Heart, Plus, Star, Zap, Check, X, Truck, Search, Trash2, Filter } from 'lucide-react';
 import { toPersianDigits, formatPrice } from '../utils/persianUtils';
@@ -172,7 +172,7 @@ const ProductArchive: React.FC = () => {
                     
                     {/* Image Area */}
                     <div className="aspect-square bg-gray-50 rounded-xl overflow-hidden relative mb-3">
-                        <img src={product.image} className="w-full h-full object-cover mix-blend-multiply transition-transform duration-500 group-hover:scale-105" loading="lazy" />
+                        <img src={getProductImage(product)} className="w-full h-full object-cover mix-blend-multiply transition-transform duration-500 group-hover:scale-105" loading="lazy" />
                         
                         {/* Badges */}
                         <div className="absolute top-2 left-2 flex flex-col gap-1 items-start z-10">
