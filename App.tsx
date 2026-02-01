@@ -33,6 +33,18 @@ const App: React.FC = () => {
     seedDatabase();
   }, []);
 
+  /* گرم‌کردن کش SW برای آفلاین: بعد از لود، دوباره document و اسکریپت اصلی را از طریق SW می‌گیریم تا حتماً کش شوند */
+  useEffect(() => {
+    if (!('serviceWorker' in navigator)) return;
+    const warm = () => {
+      fetch(window.location.pathname || '/').catch(() => {});
+      const script = document.querySelector('script[src*="/assets/"]') as HTMLScriptElement;
+      if (script?.src) fetch(script.src).catch(() => {});
+    };
+    const t = setTimeout(warm, 500);
+    return () => clearTimeout(t);
+  }, []);
+
   return (
     <CartProvider>
       <AdminAuthProvider>

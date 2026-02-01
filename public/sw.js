@@ -44,13 +44,23 @@ self.addEventListener('fetch', function (e) {
     return;
   }
 
-  /* 2. Same-origin (JS, CSS, manifest, sw): Network First، بعد کش؛ حتماً کش می‌کنیم */
-  if (sameOrigin && (req.destination === 'script' || req.destination === 'style' || url.pathname.indexOf('/assets/') === 0 || url.pathname === '/manifest.json' || url.pathname === '/sw.js')) {
+  /* 2. Same-origin (document, JS, CSS, manifest, sw): Network First، حتماً کش می‌کنیم */
+  var isAppResource = sameOrigin && (
+    req.destination === 'script' || req.destination === 'style' || req.destination === 'document' ||
+    url.pathname.indexOf('/assets/') === 0 || url.pathname === '/' || url.pathname === '/index.html' ||
+    url.pathname === '/manifest.json' || url.pathname === '/sw.js'
+  );
+  if (isAppResource) {
     e.respondWith(
       fetch(req).then(function (res) {
-        return caches.open(APP_CACHE).then(function (c) { return cachePut(c, req, res); });
+        var cacheKey = (url.pathname === '/' || req.destination === 'document') ? '/index.html' : req;
+        return caches.open(APP_CACHE).then(function (c) {
+          if (cacheKey === '/index.html') return c.put('/index.html', res.clone()).then(function () { return res; });
+          return cachePut(c, req, res);
+        });
       }).catch(function () {
-        return caches.match(req).then(function (r) { return r || new Response('Offline', { status: 503 }); });
+        var matchKey = (url.pathname === '/' || url.pathname === '/index.html') ? '/index.html' : req;
+        return caches.match(matchKey).then(function (r) { return r || new Response('Offline', { status: 503 }); });
       })
     );
     return;
