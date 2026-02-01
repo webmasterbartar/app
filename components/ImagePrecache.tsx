@@ -20,21 +20,16 @@ const ImagePrecache: React.FC = () => {
 
     hasRun.current = true;
 
-    const run = async () => {
-      const urls = collectAllImageUrls({
-        products,
-        posts,
-        blogs,
-      });
-      if (urls.length > 0) {
-        const { ok } = await precacheImages(urls);
-        if (ok > 0) {
-          console.log(`[DigiGram] ${ok} images cached for offline use.`);
-        }
-      }
-    };
+    // تأخیر ۴ ثانیه تا لود اولیه و عکس‌های بالای صفحه تمام شوند، بعد پیش‌کش در پس‌زمینه
+    const t = setTimeout(() => {
+      const run = async () => {
+        const urls = collectAllImageUrls({ products, posts, blogs });
+        if (urls.length > 0) await precacheImages(urls);
+      };
+      run();
+    }, 4000);
 
-    run();
+    return () => clearTimeout(t);
   }, [products, posts, blogs]);
 
   return null;

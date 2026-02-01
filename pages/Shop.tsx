@@ -102,7 +102,7 @@ const HeroSlider = () => {
                         transition={{ duration: 0.5 }}
                         className="absolute inset-0"
                     >
-                        <img src={slides[currentIndex].image} className="w-full h-full object-cover" alt="Hero" />
+                        <img src={slides[currentIndex].image} className="w-full h-full object-cover" alt="Hero" decoding="async" fetchPriority="high" />
                         <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent flex flex-col justify-center px-6">
                             <motion.span
                                 initial={{ y: 20, opacity: 0 }}
@@ -150,14 +150,14 @@ const PromoBanners = () => {
     return (
         <div className="grid grid-cols-2 gap-3 px-4 mt-6">
             <div className="relative h-32 rounded-2xl overflow-hidden bg-gray-100 group cursor-pointer">
-                <img src="/content/promos/1.jpg" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt="" />
+                <img src="/content/promos/1.jpg" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt="" decoding="async" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex flex-col justify-end p-3">
                     <span className="text-white font-bold text-sm">اکسسوری</span>
                     <span className="text-gray-300 text-[10px]">تکمیل استایل شما</span>
                 </div>
             </div>
             <div className="relative h-32 rounded-2xl overflow-hidden bg-gray-100 group cursor-pointer">
-                <img src="/content/promos/2.jpg" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt="" />
+                <img src="/content/promos/2.jpg" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt="" decoding="async" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex flex-col justify-end p-3">
                     <span className="text-white font-bold text-sm">گیمینگ</span>
                     <span className="text-gray-300 text-[10px]">تجهیزات حرفه‌ای</span>

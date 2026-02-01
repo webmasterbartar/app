@@ -33,7 +33,7 @@ const App: React.FC = () => {
     seedDatabase();
   }, []);
 
-  /* گرم‌کردن کش برای آفلاین: document و تمام اسکریپت/استایل اپ را از طریق SW می‌گیریم */
+  /* گرم‌کردن کش برای آفلاین: با تأخیر تا لود اولیه کند نشود */
   useEffect(() => {
     if (!('serviceWorker' in navigator)) return;
     const warmup = () => {
@@ -47,8 +47,8 @@ const App: React.FC = () => {
     };
     const onControllerChange = () => { warmup(); };
     navigator.serviceWorker.addEventListener('controllerchange', onControllerChange);
-    const t1 = setTimeout(warmup, 800);
-    const t2 = setTimeout(warmup, 2500);
+    const t1 = setTimeout(warmup, 3500);
+    const t2 = setTimeout(warmup, 8000);
     return () => {
       navigator.serviceWorker.removeEventListener('controllerchange', onControllerChange);
       clearTimeout(t1);

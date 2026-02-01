@@ -52,15 +52,22 @@ async function cacheImage(url: string): Promise<boolean> {
   }
 }
 
-/** Pre-cache a list of image URLs in background (non-blocking) */
+/** Pre-cache in small batches with delay so we don't flood the network and slow initial load */
+const BATCH_SIZE = 4;
+const BATCH_DELAY_MS = 400;
+
 export async function precacheImages(urls: string[]): Promise<{ ok: number; fail: number }> {
   const unique = [...new Set(urls)].filter(Boolean);
   let ok = 0,
     fail = 0;
-  for (const url of unique) {
-    const success = await cacheImage(url);
-    if (success) ok++;
-    else if (isImageUrl(url)) fail++;
+  for (let i = 0; i < unique.length; i += BATCH_SIZE) {
+    const batch = unique.slice(i, i + BATCH_SIZE);
+    const results = await Promise.all(batch.map((url) => cacheImage(url)));
+    results.forEach((success, j) => {
+      if (success) ok++;
+      else if (isImageUrl(batch[j])) fail++;
+    });
+    if (i + BATCH_SIZE < unique.length) await new Promise((r) => setTimeout(r, BATCH_DELAY_MS));
   }
   return { ok, fail };
 }
