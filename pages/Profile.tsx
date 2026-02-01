@@ -132,6 +132,14 @@ const StoryViewer: React.FC<StoryViewerProps> = ({ highlight, onClose, onNextHig
         startTimeRef.current = Date.now();
     }, [highlight.id]);
 
+    // پیش‌بارگذاری همه عکس‌های استوری این هایلایت برای نمایش بدون تأخیر
+    useEffect(() => {
+        highlight.stories.forEach((s) => {
+            const img = new Image();
+            img.src = s.image.startsWith('/') ? window.location.origin + s.image : s.image;
+        });
+    }, [highlight.id]);
+
     const currentStory = highlight.stories[currentStoryIndex];
     const STORY_DURATION = (currentStory?.duration || 5) * 1000;
 
@@ -261,6 +269,8 @@ const StoryViewer: React.FC<StoryViewerProps> = ({ highlight, onClose, onNextHig
                             className="w-full h-full object-contain relative z-0"
                             alt="story"
                             draggable="false"
+                            decoding="async"
+                            fetchPriority="high"
                         />
                     </AnimatePresence>
 
@@ -300,7 +310,7 @@ const StoryViewer: React.FC<StoryViewerProps> = ({ highlight, onClose, onNextHig
                                 <div className="flex items-center gap-3">
                                     <div className="flex items-center gap-2 cursor-pointer">
                                         <div className="w-8 h-8 rounded-full p-[1px] bg-white/20 backdrop-blur-sm">
-                                            <img src={highlight.cover} className="w-full h-full rounded-full object-cover" alt="avatar" />
+                                            <img src={highlight.cover} className="w-full h-full rounded-full object-cover" alt="avatar" decoding="async" />
                                         </div>
                                         <div className="flex flex-col">
                                             <div className="flex items-center gap-2">
@@ -347,8 +357,6 @@ const Profile: React.FC = () => {
 
     useEffect(() => {
         const loadPosts = async () => {
-            // Simulate network delay for skeleton demonstration
-            await new Promise(resolve => setTimeout(resolve, 800));
             const allPosts = await db.posts.toArray();
             setPosts(allPosts.reverse());
             setIsLoading(false);
@@ -403,7 +411,7 @@ const Profile: React.FC = () => {
                     <div className="relative shrink-0">
                         <div className="w-[86px] h-[86px] rounded-full p-[2px] story-gradient cursor-pointer">
                             <div className="w-full h-full rounded-full border-[2px] border-white overflow-hidden">
-                                <img src="/content/avatars/me.jpg" className="w-full h-full object-cover" alt="Profile" />
+                                <img src="/content/avatars/me.jpg" className="w-full h-full object-cover" alt="Profile" decoding="async" fetchPriority="high" />
                             </div>
                         </div>
                         <div className="absolute bottom-0 right-0 bg-[#0095f6] text-white w-6 h-6 rounded-full flex items-center justify-center border-[2px] border-white cursor-pointer">
@@ -449,8 +457,8 @@ const Profile: React.FC = () => {
                     {/* Followed by */}
                     <div className="flex items-center gap-1.5 mt-3 text-[12px]">
                         <div className="flex -space-x-1.5">
-                            <img src="/content/avatars/reel-1.jpg" className="w-4 h-4 rounded-full border border-white" alt="" />
-                            <img src="/content/avatars/reel-2.jpg" className="w-4 h-4 rounded-full border border-white" alt="" />
+                            <img src="/content/avatars/reel-1.jpg" className="w-4 h-4 rounded-full border border-white" alt="" decoding="async" />
+                            <img src="/content/avatars/reel-2.jpg" className="w-4 h-4 rounded-full border border-white" alt="" decoding="async" />
                         </div>
                         <span className="text-gray-500">Followed by <span className="font-semibold text-black">user1</span>, <span className="font-semibold text-black">user2</span> + 12 more</span>
                     </div>
@@ -471,7 +479,7 @@ const Profile: React.FC = () => {
                         <div key={hl.id} className="flex flex-col items-center gap-1.5 cursor-pointer active:opacity-70 transition-opacity" onClick={() => setActiveHighlight(hl)}>
                             <div className="w-[64px] h-[64px] rounded-full p-[1px] bg-gray-200 border border-gray-100">
                                 <div className="w-full h-full rounded-full border-[2px] border-white overflow-hidden bg-white">
-                                    <img src={hl.cover} className="w-full h-full object-cover" alt={hl.title} />
+                                    <img src={hl.cover} className="w-full h-full object-cover" alt={hl.title} decoding="async" fetchPriority={hl.id <= 2 ? 'high' : undefined} loading="eager" />
                                 </div>
                             </div>
                             <span className="text-[11px] text-black font-normal tracking-tight truncate w-16 text-center">{hl.title}</span>
@@ -514,7 +522,7 @@ const Profile: React.FC = () => {
                             className="relative aspect-square bg-gray-100 overflow-hidden cursor-pointer"
                             onClick={() => handlePostClick(post.id)}
                         >
-                            <img src={post.thumbnail} className="w-full h-full object-cover" loading="lazy" />
+                            <img src={post.thumbnail} className="w-full h-full object-cover" loading="lazy" decoding="async" />
                             {/* Reel Icon Top Right */}
                             <div className="absolute top-2 right-2 text-white drop-shadow-md">
                                 <Play size={16} fill="currentColor" className="opacity-90" />

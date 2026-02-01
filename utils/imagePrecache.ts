@@ -80,27 +80,26 @@ export function collectAllImageUrls(data?: {
 }): string[] {
   const urls: string[] = [];
 
-  // Static content on our server (public/content/)
-  const staticUrls = [
+  // اولویت: پروفایل و هایلایت‌ها و کاورها (اول کش می‌شوند)
+  const profileFirst = [
     '/content/avatars/me.jpg',
     '/content/avatars/me-small.jpg',
-    '/content/avatars/story1.jpg',
-    '/content/heroes/1.jpg',
-    '/content/heroes/2.jpg',
-    '/content/heroes/3.jpg',
-    '/content/promos/1.jpg',
-    '/content/promos/2.jpg',
-    '/content/avatars/store.jpg',
-    '/content/icons/app.jpg',
     ...Array.from({ length: 5 }, (_, i) => `/content/avatars/story-${i + 1}.jpg`),
-    ...Array.from({ length: 8 }, (_, i) => `/content/avatars/reel-${i + 1}.jpg`),
-    ...Array.from({ length: 8 }, (_, i) => `/content/products/${i + 1}.jpg`),
-    '/content/products/11.jpg',
-    '/content/products/22.jpg',
-    ...Array.from({ length: 4 }, (_, i) => `/content/reels/thumbnails/${i + 1}.jpg`),
     ...Array.from({ length: 3 }, (_, i) => `/content/blogs/${i + 1}.jpg`),
+    ...Array.from({ length: 4 }, (_, i) => `/content/reels/thumbnails/${i + 1}.jpg`),
+    '/content/avatars/story1.jpg',
+    '/content/avatars/store.jpg',
+    ...Array.from({ length: 8 }, (_, i) => `/content/avatars/reel-${i + 1}.jpg`),
   ];
-  urls.push(...staticUrls);
+  urls.push(...profileFirst);
+  const rest = [
+    '/content/heroes/1.jpg', '/content/heroes/2.jpg', '/content/heroes/3.jpg',
+    '/content/promos/1.jpg', '/content/promos/2.jpg',
+    '/content/icons/app.jpg',
+    ...Array.from({ length: 8 }, (_, i) => `/content/products/${i + 1}.jpg`),
+    '/content/products/11.jpg', '/content/products/22.jpg',
+  ];
+  urls.push(...rest);
 
   // Dynamic data from Dexie
   if (data?.products) {
