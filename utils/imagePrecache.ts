@@ -84,7 +84,7 @@ export function collectAllImageUrls(data?: {
     '/content/promos/1.jpg',
     '/content/promos/2.jpg',
     '/content/avatars/store.jpg',
-    '/content/icons/app.png',
+    '/content/icons/app.jpg',
     ...Array.from({ length: 5 }, (_, i) => `/content/avatars/story-${i + 1}.jpg`),
     ...Array.from({ length: 8 }, (_, i) => `/content/avatars/reel-${i + 1}.jpg`),
     ...Array.from({ length: 8 }, (_, i) => `/content/products/${i + 1}.jpg`),
