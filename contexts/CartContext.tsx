@@ -6,6 +6,8 @@ interface CartContextType {
   items: CartItem[];
   addToCart: (productId: number) => Promise<void>;
   removeFromCart: (productId: number) => Promise<void>;
+  decrementFromCart: (productId: number) => Promise<void>;
+  clearCart: () => Promise<void>;
   itemCount: number;
 }
 
@@ -14,7 +16,7 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   // Live query automatically updates the component when DB changes
   const items = useLiveQuery(() => db.cart.toArray()) || [];
-  
+
   const addToCart = async (productId: number) => {
     const existing = await db.cart.where('productId').equals(productId).first();
     if (existing && existing.id) {
@@ -25,16 +27,31 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const removeFromCart = async (productId: number) => {
-     const existing = await db.cart.where('productId').equals(productId).first();
-     if(existing && existing.id) {
+    const existing = await db.cart.where('productId').equals(productId).first();
+    if (existing && existing.id) {
+      await db.cart.delete(existing.id);
+    }
+  };
+
+  const decrementFromCart = async (productId: number) => {
+    const existing = await db.cart.where('productId').equals(productId).first();
+    if (existing && existing.id) {
+      if (existing.quantity > 1) {
+        await db.cart.update(existing.id, { quantity: existing.quantity - 1 });
+      } else {
         await db.cart.delete(existing.id);
-     }
+      }
+    }
+  };
+
+  const clearCart = async () => {
+    await db.cart.clear();
   };
 
   const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
-    <CartContext.Provider value={{ items, addToCart, removeFromCart, itemCount }}>
+    <CartContext.Provider value={{ items, addToCart, removeFromCart, decrementFromCart, clearCart, itemCount }}>
       {children}
     </CartContext.Provider>
   );

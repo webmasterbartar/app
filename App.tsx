@@ -19,6 +19,7 @@ import { seedDatabase } from './db';
 import { AdminAuthProvider } from './contexts/AdminAuthContext';
 import AdminLayout from './pages/admin/AdminLayout';
 import AdminLogin from './pages/admin/AdminLogin';
+import Checkout from './pages/Checkout';
 import Dashboard from './pages/admin/Dashboard';
 import ProductManager from './pages/admin/ProductManager';
 import CategoryManager from './pages/admin/CategoryManager';
@@ -37,12 +38,12 @@ const App: React.FC = () => {
   useEffect(() => {
     if (!('serviceWorker' in navigator)) return;
     const warmup = () => {
-      fetch(window.location.origin + '/index.html', { cache: 'reload' }).catch(() => {});
+      fetch(window.location.origin + '/index.html', { cache: 'reload' }).catch(() => { });
       document.querySelectorAll<HTMLScriptElement>('script[src*="/assets/"]').forEach((el) => {
-        if (el.src) fetch(el.src, { cache: 'reload' }).catch(() => {});
+        if (el.src) fetch(el.src, { cache: 'reload' }).catch(() => { });
       });
       document.querySelectorAll<HTMLLinkElement>('link[rel="stylesheet"][href*="/assets/"]').forEach((el) => {
-        if (el.href) fetch(el.href, { cache: 'reload' }).catch(() => {});
+        if (el.href) fetch(el.href, { cache: 'reload' }).catch(() => { });
       });
     };
     const onControllerChange = () => { warmup(); };
@@ -72,7 +73,8 @@ const App: React.FC = () => {
             <Route path="/product/:id" element={<Layout><ProductDetail /></Layout>} />
             <Route path="/profile" element={<Layout><Profile /></Layout>} />
             <Route path="/cart" element={<Layout><Cart /></Layout>} />
-            
+            <Route path="/checkout" element={<Checkout />} />
+
             {/* Blog Routes */}
             <Route path="/blog" element={<Layout><BlogArchive /></Layout>} />
             <Route path="/blog/:id" element={<Layout><BlogPost /></Layout>} />
