@@ -80,10 +80,10 @@ const Cart: React.FC = () => {
     }
 
     return (
-        <div className="bg-[#f8f9fa] min-h-screen pb-32 font-persian" dir="rtl">
+        <div className="bg-[#f8f9fa] min-h-[100dvh] pb-40 font-persian" dir="rtl">
 
             {/* Header */}
-            <header className="bg-white/80 backdrop-blur-md px-4 py-4 sticky top-0 z-20 shadow-sm flex items-center justify-between">
+            <header className="bg-white/80 backdrop-blur-md px-4 py-4 sticky top-0 z-30 shadow-sm flex items-center justify-between">
                 <div className="flex items-center gap-3">
                     <button onClick={() => navigate(-1)} className="p-2 hover:bg-gray-100 rounded-full transition-colors">
                         <ArrowRight size={22} className="text-gray-800" />
@@ -257,10 +257,10 @@ const Cart: React.FC = () => {
             </div>
 
             {/* Sticky Footer */}
-            <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 p-4 pb-6 max-w-md mx-auto z-30 shadow-[0_-5px_20px_rgba(0,0,0,0.05)]">
+            <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-xl border-t border-gray-100 p-5 pb-8 lg:pb-5 max-w-md mx-auto z-40 shadow-[0_-10px_30px_rgba(0,0,0,0.08)]">
                 <button
                     onClick={() => navigate('/checkout')}
-                    className="w-full bg-[#ef4056] text-white py-3.5 rounded-xl font-bold shadow-lg shadow-red-200 hover:bg-[#d63044] transition-all active:scale-[0.98] flex items-center justify-center gap-2"
+                    className="w-full bg-[#ef4056] text-white py-4 rounded-2xl font-bold shadow-xl shadow-red-200 hover:bg-[#d63044] transition-all active:scale-[0.98] flex items-center justify-center gap-2"
                 >
                     <span>ادامه فرآیند خرید</span>
                     <ChevronLeft size={18} className="bg-white/20 rounded-full p-0.5" />
