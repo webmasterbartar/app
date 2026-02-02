@@ -34,6 +34,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     document.documentElement.setAttribute('dir', dir);
     document.documentElement.setAttribute('lang', lang);
     document.body.className = `${fontClass} bg-white text-black overflow-hidden`;
+
+    return () => {
+      document.body.className = `${fontClass} bg-white text-black`;
+    };
   }, [dir, lang, fontClass]);
 
   // Offline Detection Logic
