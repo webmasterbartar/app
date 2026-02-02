@@ -435,8 +435,7 @@ const Shop: React.FC = () => {
                             className="flex flex-col items-center gap-1.5 min-w-[66px] cursor-pointer active:scale-95 transition-transform"
                             onClick={() => {
                                 if (story.name === 'مگ') navigate('/blog');
-                                else if (story.name === 'بیشتر') navigate('/categories');
-                                else navigate(`/archive/${story.name}`);
+                                else navigate('/categories');
                             }}
                         >
                             <div className="w-[66px] h-[66px] rounded-full p-[2px] border border-gray-100 flex items-center justify-center bg-gray-50/50">
