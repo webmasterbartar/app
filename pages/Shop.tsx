@@ -92,52 +92,54 @@ const HeroSlider = () => {
 
     return (
         <div className="mt-4 px-4 relative">
-            <div className="w-full aspect-[2.2/1] rounded-2xl overflow-hidden relative shadow-lg group">
+            <div className="w-full aspect-[3/4] md:aspect-[2.5/1] rounded-3xl overflow-hidden relative shadow-2xl shadow-blue-900/10 group">
                 <AnimatePresence mode='wait'>
                     <motion.div
                         key={currentIndex}
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
+                        initial={{ opacity: 0, scale: 1.1 }}
+                        animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0 }}
-                        transition={{ duration: 0.5 }}
+                        transition={{ duration: 0.8 }}
                         className="absolute inset-0"
                     >
                         <img src={slides[currentIndex].image} className="w-full h-full object-cover" alt="Hero" decoding="async" fetchPriority="high" />
-                        <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent flex flex-col justify-center px-6">
+                        {/* Premium Gradient Overlay */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end px-6 pb-12">
                             <motion.span
                                 initial={{ y: 20, opacity: 0 }}
                                 animate={{ y: 0, opacity: 1 }}
-                                transition={{ delay: 0.2 }}
-                                className={`text-white font-bold text-[10px] md:text-xs px-2 py-1 rounded-lg w-fit mb-2 bg-gradient-to-r ${slides[currentIndex].color}`}
+                                transition={{ delay: 0.3 }}
+                                className={`text-white font-bold text-[10px] md:text-xs px-3 py-1.5 rounded-full w-fit mb-3 bg-white/20 backdrop-blur-md border border-white/10`}
                             >
                                 {slides[currentIndex].title}
                             </motion.span>
                             <motion.h2
                                 initial={{ y: 20, opacity: 0 }}
                                 animate={{ y: 0, opacity: 1 }}
-                                transition={{ delay: 0.3 }}
-                                className="text-white font-black text-xl md:text-2xl mb-1 leading-tight"
+                                transition={{ delay: 0.4 }}
+                                className="text-white font-black text-3xl md:text-4xl mb-4 leading-tight drop-shadow-lg"
                             >
                                 {slides[currentIndex].subtitle}
                             </motion.h2>
                             <motion.button
                                 initial={{ y: 20, opacity: 0 }}
                                 animate={{ y: 0, opacity: 1 }}
-                                transition={{ delay: 0.4 }}
-                                className="bg-white text-black text-xs font-bold py-2 px-4 rounded-xl w-fit hover:bg-gray-100 transition-colors mt-3"
+                                transition={{ delay: 0.5 }}
+                                className="bg-white text-black text-sm font-bold py-3 px-6 rounded-2xl w-fit hover:bg-gray-100 transition-transform active:scale-95 flex items-center gap-2"
                             >
                                 مشاهده محصولات
+                                <ArrowLeft size={16} />
                             </motion.button>
                         </div>
                     </motion.div>
                 </AnimatePresence>
 
-                {/* Dots */}
-                <div className="absolute bottom-3 left-0 right-0 flex justify-center gap-1.5 z-10">
+                {/* Modern Dots */}
+                <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2 z-10">
                     {slides.map((_, idx) => (
                         <div
                             key={idx}
-                            className={`h-1.5 rounded-full transition-all duration-300 ${idx === currentIndex ? 'w-4 bg-white' : 'w-1.5 bg-white/50'}`}
+                            className={`h-1.5 rounded-full transition-all duration-500 ${idx === currentIndex ? 'w-6 bg-white shadow-[0_0_10px_rgba(255,255,255,0.5)]' : 'w-1.5 bg-white/30 backdrop-blur'}`}
                         />
                     ))}
                 </div>
@@ -271,7 +273,8 @@ const Shop: React.FC = () => {
         <div className="pb-24 bg-gray-50 font-persian min-h-screen relative" dir="rtl">
 
             {/* Sticky Header */}
-            <header className="sticky top-0 bg-white/95 backdrop-blur-md z-40 px-4 py-3 shadow-sm flex items-center gap-3 transition-all duration-300">
+            {/* Sticky Header with Premium Glassmorphism */}
+            <header className="sticky top-0 bg-white/80 backdrop-blur-xl z-40 px-4 py-3 border-b border-white/20 flex items-center gap-3 transition-all duration-300">
                 <div className={`flex-1 relative transition-all duration-300 ${isSearchActive ? 'z-50' : ''}`}>
                     <Search className={`absolute right-3 top-1/2 -translate-y-1/2 transition-colors ${isSearchActive ? 'text-[#ef4056]' : 'text-gray-400'}`} size={18} />
                     <input
@@ -525,9 +528,9 @@ const Shop: React.FC = () => {
                             <button
                                 key={cat.id}
                                 onClick={() => setSelectedCategory(cat.name)}
-                                className={`flex items-center gap-2 px-4 py-2 rounded-xl whitespace-nowrap transition-all border ${isActive
-                                    ? 'bg-gray-900 text-white border-gray-900 shadow-md'
-                                    : 'bg-white text-gray-600 border-gray-200 hover:border-gray-300'
+                                className={`flex items-center gap-2 px-5 py-2.5 rounded-full whitespace-nowrap transition-all border ${isActive
+                                    ? 'bg-black text-white border-black shadow-lg shadow-black/20 scale-105'
+                                    : 'bg-white text-gray-600 border-transparent shadow-sm hover:bg-gray-50'
                                     }`}
                             >
                                 <span className="text-xs font-bold">{cat.name}</span>
@@ -555,35 +558,47 @@ const Shop: React.FC = () => {
                     <Link
                         to={`/product/${p.id}`}
                         key={p.id}
-                        className="bg-white border border-gray-100 rounded-2xl p-3 flex flex-col gap-2 shadow-sm hover:shadow-md transition-all active:scale-[0.98]"
+                        className="bg-white rounded-[20px] p-2 flex flex-col gap-2 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all active:scale-[0.98] group overflow-hidden"
                     >
-                        <div className="aspect-square bg-gray-50 rounded-xl overflow-hidden relative">
-                            <img src={getProductImage(p)} className="w-full h-full object-cover mix-blend-multiply" loading="lazy" decoding="async" alt="" />
-                            <button className="absolute top-2 right-2 bg-white/80 backdrop-blur p-1.5 rounded-full text-gray-400 hover:text-red-500 transition-colors">
-                                <div className="w-3 h-3 border-2 border-current rounded-full" />
+                        <div className="aspect-square bg-gray-50 rounded-2xl overflow-hidden relative">
+                            <img src={getProductImage(p)} className="w-full h-full object-cover mix-blend-multiply group-hover:scale-105 transition-transform duration-700" loading="lazy" decoding="async" alt="" />
+
+                            {/* Floating Actions */}
+                            <button className="absolute top-2 right-2 bg-white/90 backdrop-blur-md p-2 rounded-full text-gray-400 hover:text-red-500 hover:bg-red-50 transition-colors shadow-sm opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 duration-300">
+                                <div className="w-3.5 h-3.5 border-2 border-current rounded-full" />
                             </button>
+
+                            <button className="absolute bottom-2 right-2 bg-black/80 backdrop-blur-md p-2 rounded-full text-white hover:bg-black transition-colors shadow-sm opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 duration-300 delay-75">
+                                <Plus size={16} />
+                            </button>
+
                             {p.is_amazing && (
-                                <span className="absolute bottom-1 left-1 bg-[#ef4056] text-white text-[9px] px-1.5 py-0.5 rounded font-bold shadow-sm">
+                                <span className="absolute top-2 left-2 bg-[#ef4056] text-white text-[9px] px-2 py-1 rounded-lg font-bold shadow-sm animate-pulse">
                                     فروش ویژه
                                 </span>
                             )}
                         </div>
-                        <h4 className="text-xs font-bold text-gray-800 line-clamp-2 leading-5 h-10 mt-1">{p.title}</h4>
 
-                        <div className="flex items-center gap-1 mb-1">
-                            <Star size={10} className="fill-yellow-400 text-yellow-400" />
-                            <span className="text-[10px] font-bold text-gray-500">{toPersianDigits(p.rating)}</span>
-                        </div>
+                        <div className="px-1 pb-1">
+                            <h4 className="text-xs font-bold text-gray-800 line-clamp-2 leading-5 h-10 mt-1">{p.title}</h4>
 
-                        <div className="mt-auto text-left pt-2 border-t border-gray-50 flex flex-col items-end">
-                            {p.original_price && p.original_price > p.price && (
-                                <span className="text-[10px] text-gray-400 line-through decoration-red-400/50">
-                                    {formatPrice(p.original_price)}
-                                </span>
-                            )}
-                            <span className="text-sm font-black text-gray-900 flex items-center gap-1">
-                                {formatPrice(p.price)} <span className="text-[10px] font-medium text-gray-500">تومان</span>
-                            </span>
+                            <div className="flex items-center justify-between mt-2">
+                                <div className="flex items-center gap-1 bg-yellow-50 px-1.5 py-0.5 rounded-md">
+                                    <Star size={10} className="fill-yellow-400 text-yellow-400" />
+                                    <span className="text-[10px] font-bold text-gray-600">{toPersianDigits(p.rating)}</span>
+                                </div>
+
+                                <div className="flex flex-col items-end">
+                                    {p.original_price && p.original_price > p.price && (
+                                        <span className="text-[10px] text-gray-400 line-through decoration-red-400/50">
+                                            {formatPrice(p.original_price)}
+                                        </span>
+                                    )}
+                                    <span className="text-sm font-black text-gray-900 flex items-center gap-1">
+                                        {formatPrice(p.price)} <span className="text-[10px] font-medium text-gray-500">تومان</span>
+                                    </span>
+                                </div>
+                            </div>
                         </div>
                     </Link>
                 )) : (
