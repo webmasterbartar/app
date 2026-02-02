@@ -1,4 +1,5 @@
 import React from 'react';
+import './index.css';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 
@@ -10,7 +11,7 @@ if (!rootElement) {
 // Service Worker: ثبت زودهنگام تا قبل از لود منابع، کنترل صفحه زودتر گرفته شود
 if ('serviceWorker' in navigator) {
   const swPath = import.meta.env.BASE_URL + 'sw.js';
-  navigator.serviceWorker.register(swPath, { scope: '/' }).catch(() => {});
+  navigator.serviceWorker.register(swPath, { scope: '/' }).catch(() => { });
 }
 
 const root = ReactDOM.createRoot(rootElement);

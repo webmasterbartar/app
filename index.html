@@ -10,63 +10,11 @@
     <meta name="apple-mobile-web-app-title" content="DigiGram">
     <link rel="manifest" href="/manifest.json" />
     <link rel="apple-touch-icon" href="/content/icons/app.jpg">
-    <link rel="preconnect" href="https://cdn.tailwindcss.com">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <title>DigiGram Store</title>
-    <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@100..900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-      /* Base fonts */
-      .font-persian { font-family: 'Vazirmatn', sans-serif; }
-      .font-english { font-family: 'Inter', sans-serif; }
-      
-      body {
-        background-color: #fafafa;
-        -webkit-tap-highlight-color: transparent;
-        overscroll-behavior-y: none;
-      }
-      /* Hide scrollbar for Chrome, Safari and Opera */
-      .no-scrollbar::-webkit-scrollbar {
-        display: none;
-      }
-      /* Hide scrollbar for IE, Edge and Firefox */
-      .no-scrollbar {
-        -ms-overflow-style: none;  /* IE and Edge */
-        scrollbar-width: none;  /* Firefox */
-      }
-      
-      /* Story Gradient Animation */
-      .story-gradient {
-        background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
-      }
-
-      @keyframes marquee {
-        0% { transform: translateX(0); }
-        100% { transform: translateX(-50%); }
-      }
-      .animate-marquee {
-        animation: marquee 8s linear infinite;
-        display: inline-block;
-      }
-
-      @keyframes music-bar {
-        0%, 100% { transform: scaleY(0.3); }
-        50% { transform: scaleY(1); }
-      }
-      .animate-music-bar-1 { animation: music-bar 1s ease-in-out infinite; }
-      .animate-music-bar-2 { animation: music-bar 1.2s ease-in-out infinite; }
-      .animate-music-bar-3 { animation: music-bar 0.8s ease-in-out infinite; }
-
-      .animate-spin-slower {
-        animation: spin 10s linear infinite;
-      }
-      @keyframes spin {
-        from { transform: rotate(0deg); }
-        to { transform: rotate(360deg); }
-      }
-    </style>
   <script type="importmap">
 {
   "imports": {

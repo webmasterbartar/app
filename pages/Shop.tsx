@@ -196,10 +196,13 @@ const Shop: React.FC = () => {
         const matchSearch = normalizedTitle.includes(normalizedQuery);
         return matchCat && matchSearch;
     }).sort((a, b) => {
-        return (b.isAmazing === a.isAmazing ? 0 : b.isAmazing ? 1 : -1);
+        // Safe access with optional chaining or default false
+        const aAmazing = !!a.is_amazing;
+        const bAmazing = !!b.is_amazing;
+        return (bAmazing === aAmazing ? 0 : bAmazing ? 1 : -1);
     });
 
-    const amazingProducts = products.filter(p => !!p.isAmazing);
+    const amazingProducts = products.filter(p => !!p.is_amazing);
 
     // Suggestions (Live Search)
     const searchSuggestions = searchQuery.length > 1
@@ -484,18 +487,18 @@ const Shop: React.FC = () => {
                             {amazingProducts.map(p => (
                                 <Link to={`/product/${p.id}`} key={p.id} className="min-w-[160px] max-w-[160px] bg-white rounded-2xl p-3 flex flex-col gap-2 shadow-lg relative group active:scale-95 transition-transform">
                                     <div className="relative aspect-square bg-gray-50 rounded-xl overflow-hidden">
-                                        <img src={getProductImage(p)} className="w-full h-full object-cover mix-blend-multiply group-hover:scale-110 transition-transform duration-500" loading="lazy" alt="" />
-                                        {p.originalPrice && p.originalPrice > p.price && (
+                                        <img src={getProductImage(p)} className="w-full h-full object-cover mix-blend-multiply group-hover:scale-110 transition-transform duration-500" loading="lazy" decoding="async" alt="" />
+                                        {p.original_price && p.original_price > p.price && (
                                             <span className="absolute bottom-1 right-1 bg-[#ef4056] text-white text-[10px] px-1.5 py-0.5 rounded-md font-bold shadow-sm">
-                                                {toPersianDigits(Math.round(((p.originalPrice - p.price) / p.originalPrice) * 100))}%
+                                                {toPersianDigits(Math.round(((p.original_price - p.price) / p.original_price) * 100))}%
                                             </span>
                                         )}
                                     </div>
                                     <h4 className="text-xs text-gray-800 line-clamp-2 leading-5 min-h-[40px] font-bold mt-1">{p.title}</h4>
                                     <div className="flex flex-col items-end mt-auto">
-                                        {p.originalPrice && p.originalPrice > p.price && (
+                                        {p.original_price && p.original_price > p.price && (
                                             <span className="text-[10px] text-gray-400 line-through decoration-red-400/50">
-                                                {formatPrice(p.originalPrice)}
+                                                {formatPrice(p.original_price)}
                                             </span>
                                         )}
                                         <span className="text-sm font-black text-gray-900 flex items-center gap-1">
@@ -555,11 +558,11 @@ const Shop: React.FC = () => {
                         className="bg-white border border-gray-100 rounded-2xl p-3 flex flex-col gap-2 shadow-sm hover:shadow-md transition-all active:scale-[0.98]"
                     >
                         <div className="aspect-square bg-gray-50 rounded-xl overflow-hidden relative">
-                            <img src={getProductImage(p)} className="w-full h-full object-cover mix-blend-multiply" loading="lazy" alt="" />
+                            <img src={getProductImage(p)} className="w-full h-full object-cover mix-blend-multiply" loading="lazy" decoding="async" alt="" />
                             <button className="absolute top-2 right-2 bg-white/80 backdrop-blur p-1.5 rounded-full text-gray-400 hover:text-red-500 transition-colors">
                                 <div className="w-3 h-3 border-2 border-current rounded-full" />
                             </button>
-                            {p.isAmazing && (
+                            {p.is_amazing && (
                                 <span className="absolute bottom-1 left-1 bg-[#ef4056] text-white text-[9px] px-1.5 py-0.5 rounded font-bold shadow-sm">
                                     فروش ویژه
                                 </span>
@@ -573,9 +576,9 @@ const Shop: React.FC = () => {
                         </div>
 
                         <div className="mt-auto text-left pt-2 border-t border-gray-50 flex flex-col items-end">
-                            {p.originalPrice && p.originalPrice > p.price && (
+                            {p.original_price && p.original_price > p.price && (
                                 <span className="text-[10px] text-gray-400 line-through decoration-red-400/50">
-                                    {formatPrice(p.originalPrice)}
+                                    {formatPrice(p.original_price)}
                                 </span>
                             )}
                             <span className="text-sm font-black text-gray-900 flex items-center gap-1">
