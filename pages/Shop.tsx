@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db, Product, getProductImage } from '../db';
-import { Search, Bell, SlidersHorizontal, Percent, ShoppingBag, X, Play, MoreHorizontal, Smartphone, Laptop, Watch, Headphones, Shirt, Footprints, Briefcase, Zap, Star, Flame, BookOpen, Clock, ChevronLeft, ArrowLeft, ArrowRight, History, TrendingUp, ChevronRight, Plus } from 'lucide-react';
+import { Search, Bell, SlidersHorizontal, Percent, ShoppingBag, X, Play, MoreHorizontal, Smartphone, Laptop, Watch, Headphones, Shirt, Footprints, Briefcase, Zap, Star, Flame, BookOpen, Clock, ChevronLeft, ArrowLeft, ArrowRight, History, TrendingUp, ChevronRight, Plus, Camera } from 'lucide-react';
 import { toPersianDigits, formatPrice, formatTime } from '../utils/persianUtils';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -247,16 +247,16 @@ const Shop: React.FC = () => {
         localStorage.removeItem('digigram_search_history');
     };
 
-    // Story/Category Data
+    // Story/Category Data - Matching CategoryPage
     const stories = [
-        { id: 99, name: 'مگ', icon: BookOpen, color: 'bg-yellow-100 text-yellow-600' },
-        { id: 1, name: 'دیجیتال', icon: Smartphone, color: 'bg-blue-100 text-blue-600' },
-        { id: 2, name: 'استایل', icon: Shirt, color: 'bg-purple-100 text-purple-600' },
-        { id: 3, name: 'گیمینگ', icon: Laptop, color: 'bg-red-100 text-red-600' },
-        { id: 4, name: 'ورزش', icon: Footprints, color: 'bg-green-100 text-green-600' },
-        { id: 5, name: 'ساعت', icon: Watch, color: 'bg-orange-100 text-orange-600' },
-        { id: 6, name: 'صوتی', icon: Headphones, color: 'bg-pink-100 text-pink-600' },
-        { id: 7, name: 'بیشتر', icon: MoreHorizontal, color: 'bg-gray-100 text-gray-600' },
+        { id: 'لوازم الکترونیکی', name: 'کالای دیجیتال', icon: Smartphone, color: 'bg-blue-100 text-blue-600' },
+        { id: 'لپ‌تاپ', name: 'لپ‌تاپ و سیستم', icon: Laptop, color: 'bg-gray-100 text-gray-700' },
+        { id: 'مد و پوشاک', name: 'مد و پوشاک', icon: Shirt, color: 'bg-purple-100 text-purple-600' },
+        { id: 'سفر و ورزش', name: 'ورزش و سفر', icon: Footprints, color: 'bg-green-100 text-green-600' },
+        { id: 'عکاسی', name: 'دوربین و لنز', icon: Camera, color: 'bg-orange-100 text-orange-600' },
+        { id: 'ساعت', name: 'ساعت هوشمند', icon: Watch, color: 'bg-red-100 text-red-600' },
+        { id: 'کیف', name: 'کیف و کوله', icon: Briefcase, color: 'bg-teal-100 text-teal-600' },
+        { id: 'هدفون', name: 'صوتی و تصویری', icon: Headphones, color: 'bg-pink-100 text-pink-600' },
     ];
 
     const categories = [
@@ -433,10 +433,7 @@ const Shop: React.FC = () => {
                         <div
                             key={story.id}
                             className="flex flex-col items-center gap-1.5 min-w-[66px] cursor-pointer active:scale-95 transition-transform"
-                            onClick={() => {
-                                if (story.name === 'مگ') navigate('/blog');
-                                else navigate('/categories');
-                            }}
+                            onClick={() => navigate(`/archive/${story.id}`)}
                         >
                             <div className="w-[66px] h-[66px] rounded-full p-[2px] border border-gray-100 flex items-center justify-center bg-gray-50/50">
                                 <story.icon size={26} className={story.color.split(' ')[1]} strokeWidth={1.5} />
