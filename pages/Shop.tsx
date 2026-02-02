@@ -417,22 +417,7 @@ const Shop: React.FC = () => {
             {/* Stories / Quick Categories */}
             <div className="mt-2 pt-2 pb-4 overflow-x-auto no-scrollbar bg-white border-b border-gray-100">
                 <div className="flex px-4 gap-4 items-center">
-                    {/* Your Story */}
-                    <div className="flex flex-col items-center gap-1.5 min-w-[66px] cursor-pointer group">
-                        <div className="relative">
-                            <div className="w-[66px] h-[66px] rounded-full p-[2px] border border-gray-200">
-                                <img
-                                    src="/content/avatars/me.jpg"
-                                    className="w-full h-full object-cover rounded-full"
-                                    alt="Your Story"
-                                />
-                            </div>
-                            <div className="absolute bottom-0 right-0 bg-[#0095f6] text-white w-5 h-5 rounded-full flex items-center justify-center border-2 border-white">
-                                <Plus size={12} strokeWidth={4} />
-                            </div>
-                        </div>
-                        <span className="text-[11px] font-normal text-gray-500">داستان شما</span>
-                    </div>
+
 
                     {/* Special 'New' Story */}
                     <div className="flex flex-col items-center gap-1.5 min-w-[66px] cursor-pointer">
