@@ -207,7 +207,9 @@ const Shop: React.FC = () => {
         return (bAmazing === aAmazing ? 0 : bAmazing ? 1 : -1);
     });
 
-    const amazingProducts = products.filter(p => !!p.is_amazing);
+    const amazingProducts = products.filter(p => !!p.is_amazing).length > 0
+        ? products.filter(p => !!p.is_amazing)
+        : products.slice(0, 8); // Fallback: show first 8 products if no amazing products
 
     // Suggestions (Live Search)
     const searchSuggestions = searchQuery.length > 1
