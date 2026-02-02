@@ -91,25 +91,26 @@ const HeroSlider = () => {
     }, [slides.length]);
 
     return (
-        <div className="mt-4 px-4 relative">
-            <div className="w-full aspect-[3/4] md:aspect-[2.5/1] rounded-3xl overflow-hidden relative shadow-2xl shadow-blue-900/10 group">
+        <div className="mt-2 text-center md:mt-4 px-0 md:px-4 relative">
+            <div className="w-full h-[50dvh] md:h-auto md:aspect-[2.5/1] md:rounded-3xl overflow-hidden relative shadow-sm md:shadow-2xl md:shadow-blue-900/10 group">
                 <AnimatePresence mode='wait'>
                     <motion.div
                         key={currentIndex}
-                        initial={{ opacity: 0, scale: 1.1 }}
+                        initial={{ opacity: 0, scale: 1.05 }}
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.8 }}
                         className="absolute inset-0"
                     >
                         <img src={slides[currentIndex].image} className="w-full h-full object-cover" alt="Hero" decoding="async" fetchPriority="high" />
-                        {/* Premium Gradient Overlay */}
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end px-6 pb-12">
+
+                        {/* Immersive Gradient Overlay - Optimized for Legibility and Visibility */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent flex flex-col justify-end px-6 pb-8 md:pb-12">
                             <motion.span
                                 initial={{ y: 20, opacity: 0 }}
                                 animate={{ y: 0, opacity: 1 }}
                                 transition={{ delay: 0.3 }}
-                                className={`text-white font-bold text-[10px] md:text-xs px-3 py-1.5 rounded-full w-fit mb-3 bg-white/20 backdrop-blur-md border border-white/10`}
+                                className={`text-white font-bold text-[10px] md:text-xs px-3 py-1.5 rounded-full w-fit mb-2 bg-white/10 backdrop-blur-md border border-white/20`}
                             >
                                 {slides[currentIndex].title}
                             </motion.span>
@@ -117,29 +118,31 @@ const HeroSlider = () => {
                                 initial={{ y: 20, opacity: 0 }}
                                 animate={{ y: 0, opacity: 1 }}
                                 transition={{ delay: 0.4 }}
-                                className="text-white font-black text-3xl md:text-4xl mb-4 leading-tight drop-shadow-lg"
+                                className="text-white font-black text-2xl md:text-4xl mb-3 leading-tight drop-shadow-lg"
                             >
                                 {slides[currentIndex].subtitle}
                             </motion.h2>
-                            <motion.button
+                            <motion.div
                                 initial={{ y: 20, opacity: 0 }}
                                 animate={{ y: 0, opacity: 1 }}
                                 transition={{ delay: 0.5 }}
-                                className="bg-white text-black text-sm font-bold py-3 px-6 rounded-2xl w-fit hover:bg-gray-100 transition-transform active:scale-95 flex items-center gap-2"
+                                className="flex items-center gap-3"
                             >
-                                مشاهده محصولات
-                                <ArrowLeft size={16} />
-                            </motion.button>
+                                <button className="bg-white text-black text-xs md:text-sm font-bold py-2.5 px-6 rounded-xl hover:bg-gray-100 transition-colors active:scale-95 flex items-center gap-2">
+                                    خرید کنید
+                                    <ArrowLeft size={14} />
+                                </button>
+                            </motion.div>
                         </div>
                     </motion.div>
                 </AnimatePresence>
 
                 {/* Modern Dots */}
-                <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2 z-10">
+                <div className="absolute bottom-3 left-0 right-0 flex justify-center gap-1.5 z-10">
                     {slides.map((_, idx) => (
                         <div
                             key={idx}
-                            className={`h-1.5 rounded-full transition-all duration-500 ${idx === currentIndex ? 'w-6 bg-white shadow-[0_0_10px_rgba(255,255,255,0.5)]' : 'w-1.5 bg-white/30 backdrop-blur'}`}
+                            className={`h-1 rounded-full transition-all duration-500 ${idx === currentIndex ? 'w-5 bg-white shadow-[0_0_8px_rgba(255,255,255,0.8)]' : 'w-1.5 bg-white/40 backdrop-blur'}`}
                         />
                     ))}
                 </div>

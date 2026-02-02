@@ -161,6 +161,11 @@ const ProductDetail: React.FC = () => {
   const navigate = useNavigate();
   const { addToCart, itemCount } = useCart();
 
+  // Force Scroll to Top on Mount/Change
+  React.useLayoutEffect(() => {
+    window.scrollTo(0, 0);
+  }, [id]);
+
   const product = useLiveQuery(
     () => (id ? db.products.get(parseInt(id)) : undefined),
     [id]
