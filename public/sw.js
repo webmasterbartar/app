@@ -1,10 +1,10 @@
 /* DigiGram Store - Service Worker | PWA Offline */
-const APP_CACHE = 'digigram-app-v7';
-const IMAGE_CACHE = 'digigram-images-v7';
-const EXTERNAL_CACHE = 'digigram-external-v2';
+const APP_CACHE = 'digigram-app-v8';
+const IMAGE_CACHE = 'digigram-images-v8';
+const EXTERNAL_CACHE = 'digigram-external-v3';
 
 /* لیست دارایی‌های حیاتی در بیلد با پلاگین Vite پر می‌شود؛ در حالت dev از مقدار پیش‌فرض استفاده می‌شود */
-const PRECACHE_URLS = (function () { try { return __PRECACHE_URLS__; } catch (e) { return ['/index.html', '/manifest.json']; } })();
+const PRECACHE_URLS = (function () { try { return __PRECACHE_URLS__; } catch (e) { return ['/', '/index.html', '/manifest.json']; } })();
 
 const OFFLINE_IMG = '<svg width="400" height="400" xmlns="http://www.w3.org/2000/svg" style="background:#f3f4f6"><text x="50%" y="50%" font-family="sans-serif" font-size="20" fill="#9ca3af" text-anchor="middle" dy=".3em">Offline</text></svg>';
 

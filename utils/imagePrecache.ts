@@ -3,7 +3,7 @@
  * Downloads and caches all images for full offline support.
  * Must use same IMAGE_CACHE_NAME as Service Worker.
  */
-const IMAGE_CACHE_NAME = 'digigram-images-v6';
+const IMAGE_CACHE_NAME = 'digigram-images-v8';
 
 /** Domains that we cache images from */
 const CACHEABLE_IMAGE_DOMAINS = [
